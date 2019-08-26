@@ -1,0 +1,29 @@
+<gatein-resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://www.exoplatform.org/xml/ns/gatein_resources_1_4 http://www.exoplatform.org/xml/ns/gatein_resources_1_4"
+                  xmlns="http://www.exoplatform.org/xml/ns/gatein_resources_1_4">
+
+    <portlet>
+        <name>FunctionalConfigurationPortlet</name>
+        <module>
+            <depends>
+                <module>functionalConfigurationBundle</module>
+            </depends>
+        </module>
+    </portlet>
+
+
+    <module>
+        <name>functionalConfigurationBundle</name>
+        <script>
+            <minify>false</minify>
+            <path>/js/functionalConfiguration.bundle.js</path>
+        </script>
+        <depends>
+            <module>vue</module>
+        </depends>
+        <depends>
+            <module>eXoVueI18n</module>
+        </depends>
+    </module>
+
+</gatein-resources>

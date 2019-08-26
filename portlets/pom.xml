@@ -30,6 +30,15 @@
 
 	<packaging>war</packaging>
 	<name>Functional configuration addon - Portlets</name>
+
+	<properties>
+		<!-- Maven Plugin for JS and CSS bundling and Unit Test execution -->
+		<com.github.eirslett.frontend.version>1.6</com.github.eirslett.frontend.version>
+		<node.version>v10.4.1</node.version>
+		<npm.version>6.1.0</npm.version>
+		<portlet.version>2.0</portlet.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.exoplatform.addons.functional-configuration</groupId>
@@ -70,5 +79,55 @@
 	</dependencies>
 	<build>
 		<finalName>functional-configuration-portlets</finalName>
+		<plugins>
+			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>${com.github.eirslett.frontend.version}</version>
+				<configuration>
+					<workingDirectory>src/main/frontend</workingDirectory>
+					<installDirectory>target</installDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>install node and npm</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+						<configuration>
+							<nodeVersion>${node.version}</nodeVersion>
+							<npmVersion>${npm.version}</npmVersion>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>install</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm run test</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>test</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm run build</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>run build</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 </project>

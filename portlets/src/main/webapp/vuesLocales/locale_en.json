@@ -1,0 +1,16 @@
+{
+  "configuration.spacesWithActivityComposer":"Spaces list with composer",
+  "configuration.add":"Add",
+  "configuration.delete":"Delete",
+  "configuration.spacesWithoutActivityComposer":"Spaces list without composer",
+  "configuration.hideUserActivityComposer":"Hide user activity stream composer",
+  "configuration.selectSpaceWithActivityComposerWarning":"You should select one or more spaces with composer",
+  "configuration.selectSpaceWithoutActivityComposerWarning":"You should select one or more spaces without composer",
+  "configuration.hideSpaceActivityComposerSuccess":"The selected spaces are henceforth without composer",
+  "configuration.hideSpaceActivityComposerFailure":"Error occurs when adding the selected spaces to the list of spaces without composer",
+  "configuration.showSpaceActivityComposerSuccess":"The selected spaces are henceforth with composer",
+  "configuration.showSpaceActivityComposerFailure":"Error occurs when adding the selected spaces to the list of spaces with composer",
+  "configuration.hideUsersComposerSuccess":"User activity stream is henceforth without composer",
+  "configuration.showUsersComposerSuccess":"User activity stream is henceforth with composer",
+  "configuration.configureUsersComposerFailure":"Error occurs when configuring user activity stream composer"
+}

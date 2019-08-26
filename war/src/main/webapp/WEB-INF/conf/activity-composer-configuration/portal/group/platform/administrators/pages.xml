@@ -10,10 +10,10 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <portlet-application>
       <portlet>
-        <application-ref>activity-composer-configuration-portlets</application-ref>
-        <portlet-ref>ActivityComposerConfigurationPortlet</portlet-ref>
+        <application-ref>functional-configuration-portlets</application-ref>
+        <portlet-ref>FunctionalConfigurationPortlet</portlet-ref>
       </portlet>
-      <title>AS Composer Configuration</title>
+      <title>Functional Configuration</title>
       <access-permissions>*:/platform/administrators</access-permissions>
       <show-info-bar>false</show-info-bar>
     </portlet-application>

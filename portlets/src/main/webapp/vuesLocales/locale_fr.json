@@ -1,0 +1,16 @@
+{
+  "configuration.spacesWithActivityComposer":"Liste des espaces avec composer",
+  "configuration.add":"Ajouter",
+  "configuration.delete":"Supprimer",
+  "configuration.spacesWithoutActivityComposer":"Liste des espaces sans composer",
+  "configuration.hideUserActivityComposer":"Cacher le composer de la file d'actualit\u00E9 des utilisateurs",
+  "configuration.selectSpaceWithActivityComposerWarning":"Vous devez selectionner un ou plusieurs espaces avec composer",
+  "configuration.selectSpaceWithoutActivityComposerWarning":"Vous devez selectionner un ou plusieurs espaces sans composer",
+  "configuration.hideSpaceActivityComposerSuccess":"Les espaces s\u00E9lectionn\u00E9s sont d\u00E9sormais sans composer",
+  "configuration.hideSpaceActivityComposerFailure":"Erreur lors de l'ajout des espaces s\u00E9lectionn\u00E9s \u00E0 la liste des espaces sans composer",
+  "configuration.showSpaceActivityComposerSuccess":"Les espaces s\u00E9lectionn\u00E9s sont d\u00E9sormais avec composer",
+  "configuration.showSpaceActivityComposerFailure":"Erreur lors de l'ajout des espaces s\u00E9lectionn\u00E9s \u00E0 la liste des espaces avec composer",
+  "configuration.hideUsersComposerSuccess":"La file d'actualit\u00E9 des utilisateurs est d\u00E9sormais sans composer",
+  "configuration.showUsersComposerSuccess":"La file d'actualit\u00E9 des utilisateurs est d\u00E9sormais avec composer",
+  "configuration.configureUsersComposerFailure":"Erreur de configuration du composer de la file d'actualit\u00E9 des utilisateurs"
+}
