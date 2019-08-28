@@ -1,87 +1,68 @@
 package org.exoplatform.rest;
 
-import static org.exoplatform.rest.utils.RestUtils.isValidBooleanParameter;
+import org.exoplatform.commons.api.settings.SettingService;
+import org.exoplatform.commons.api.settings.SettingValue;
+import org.exoplatform.commons.api.settings.data.Context;
+import org.exoplatform.commons.api.settings.data.Scope;
+import org.exoplatform.services.rest.resource.ResourceContainer;
 
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.exoplatform.rest.response.SpaceConfiguration;
-import org.exoplatform.service.FunctionalConfigurationService;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
-import org.exoplatform.services.rest.resource.ResourceContainer;
+import static java.util.Objects.nonNull;
+import static org.exoplatform.service.ActivityComposerConfigurationService.HIDE_USER_ACTIVITY_COMPOSER;
 
 @Path("/functional-configuration")
 public class FunctionalConfigurationController implements ResourceContainer {
+    private final String DOES_DOCUMENT_EDITION_SHOULD_CREATE_ACTIVITY = "DOES_DOCUMENT_EDITION_SHOULD_CREATE_ACTIVITY";
+    private SettingService settingService;
 
-    private static final String DOCUMENT_ACTIVITY_ENDPOINT = "/document-activity";
-    private static final String CONFIGURATION_ENDPOINT = "/configuration";
-    private static final String COMPOSER_ACTIVITY_ENDPOINT = "/composer-activity";
-    private static final String UPDATE_SPACE_CONFIGURATION_ENDPOINT = "/configuration/space";
+    public FunctionalConfigurationController(SettingService settingService){
+        this.settingService = settingService;
+    }
 
-    private FunctionalConfigurationService functionalConfigurationService;
-
-    private static final Log LOGGER = ExoLogger.getLogger(FunctionalConfigurationService.class);
-
-
-    public FunctionalConfigurationController(FunctionalConfigurationService functionalConfigurationService){
-        this.functionalConfigurationService = functionalConfigurationService;
+    @POST
+    @Path("/hide-user-activity-composer")
+    public Response hideUserActivity(String isHidden) {
+        settingService.set(Context.GLOBAL, Scope.GLOBAL, HIDE_USER_ACTIVITY_COMPOSER, SettingValue.create(isHidden));
+        return Response.ok().build();
     }
 
     @GET
-    @Path(CONFIGURATION_ENDPOINT)
-    @RolesAllowed("administrators")
+    @Path("/configuration")
     public Response getConfiguration(){
-        LOGGER.info("FunctionalConfiguration : GetConfiguration");
-        return Response
-                .ok(functionalConfigurationService.getConfiguration(), MediaType.APPLICATION_JSON)
-                .build();
-    }
-
-    @PUT
-    @Path(DOCUMENT_ACTIVITY_ENDPOINT)
-    @RolesAllowed("administrators")
-    public Response updateDocumentActionActivitiesVisibility(@QueryParam("hidden") String hidden) {
-        LOGGER.info("FunctionalConfiguration : updateDocumentActionActivitiesVisibility, hidden="+hidden);
-
-        if (!isValidBooleanParameter(hidden)) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        functionalConfigurationService.configureDocumentActionActivities(hidden);
-
         return Response.ok().build();
     }
 
-    @PUT
-    @Path(COMPOSER_ACTIVITY_ENDPOINT)
-    @RolesAllowed("administrators")
-    public Response updateComposerActivity(@QueryParam("hidden") String hidden) {
-        LOGGER.info("FunctionalConfiguration : updateComposerActivity, hidden="+hidden);
+    @GET
+    @Path("/listening")
+    public Response isListeningDocumentActivity() {
+        SettingValue<?> isListening = settingService.get(Context.GLOBAL, Scope.GLOBAL, DOES_DOCUMENT_EDITION_SHOULD_CREATE_ACTIVITY);
 
-        if (!isValidBooleanParameter(hidden)) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+        if (nonNull(isListening)) {
+            return Response.ok(isListening.getValue()).build();
         }
-
-        functionalConfigurationService.configureActivityComposer(hidden);
-        return Response.ok().build();
+        else {
+            return Response.ok(true).build();
+        }
     }
 
 
-    @PUT
-    @Path(UPDATE_SPACE_CONFIGURATION_ENDPOINT)
-    @RolesAllowed("administrators")
-    public Response updateSpaceConfiguration(SpaceConfiguration space) {
-        LOGGER.info("FunctionalConfiguration : updateSpaceConfiguration for space "+space.getDisplayName());
+    //todo change get to post
+    @GET
+    @Path("/set-listening")
+    public Response setListeningDocumentActivity(@QueryParam("status") String status) {
+        if (status.equals("true") || status.equals("false")) {
+            boolean booleanStatus = status.equals("true");
 
-        SpaceConfiguration spaceConfiguration = functionalConfigurationService.updateSpaceConfiguration(space);
+            settingService.set(Context.GLOBAL, Scope.GLOBAL, DOES_DOCUMENT_EDITION_SHOULD_CREATE_ACTIVITY, SettingValue.create(booleanStatus));
 
-        return Response
-                .ok(spaceConfiguration, MediaType.APPLICATION_JSON)
-                .build();
+            return Response.ok(status).build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
+
 }
