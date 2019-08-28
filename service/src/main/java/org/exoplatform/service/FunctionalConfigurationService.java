@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.commons.api.settings.data.Context;
@@ -12,8 +13,14 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
+import javax.ws.rs.core.Response;
+
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 public class FunctionalConfigurationService {
-  
+
+  private final String DOCUMENT_ACTION_ACTIVITIES_HIDDEN = "DOCUMENT_ACTION_ACTIVITIES_HIDDEN";
+
   public static final String HIDE_USER_ACTIVITY_COMPOSER = "hideUserActivityComposer";
   
   public static final String SPACES_WITHOUT_ACTIVITY_COMPOSER = "spacesWithoutActivityComposer";
@@ -89,6 +96,18 @@ public class FunctionalConfigurationService {
       else {
         listSpacesWithActivityComposer.add(space);
       }
+    }
+  }
+
+  public void updateDocumentActionActivitiesVisibility(String hiddenAsString) {
+
+    if (isNotEmpty(hiddenAsString) && (hiddenAsString.equals("true") || hiddenAsString.equals("false"))) {
+
+      boolean booleanStatus = hiddenAsString.equals("true");
+
+      settingService.set(Context.GLOBAL, Scope.GLOBAL, DOCUMENT_ACTION_ACTIVITIES_HIDDEN, SettingValue.create(booleanStatus));
+
+//      return Response.ok(status).build();
     }
   }
 }
