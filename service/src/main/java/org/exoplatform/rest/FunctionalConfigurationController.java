@@ -31,6 +31,14 @@ public class FunctionalConfigurationController implements ResourceContainer {
         return Response.ok().build();
     }
 
+    @POST
+    @Path("/hide-document-activities")
+    public Response hideUserActivity(String isHidden) {
+
+        settingService.set(Context.GLOBAL, Scope.GLOBAL, "DOES_DOCUMENT_EDITION_SHOULD_CREATE_ACTIVITY", SettingValue.create(isHidden));
+        return Response.ok().build();
+    }
+
     @GET
     @Path("/configuration")
     public Response getConfiguration(){
