@@ -17,7 +17,7 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 
 public class FunctionalConfigurationService {
 
-  private final String HIDE_DOCUMENT_ACTION_ACTIVITIES = "HIDE_DOCUMENT_ACTION_ACTIVITIES";
+  public static final String HIDE_DOCUMENT_ACTION_ACTIVITIES = "HIDE_DOCUMENT_ACTION_ACTIVITIES";
 
   public static final String HIDE_USER_ACTIVITY_COMPOSER = "hideUserActivityComposer";
   
@@ -99,7 +99,6 @@ public class FunctionalConfigurationService {
 
   public void updateDocumentActionActivity(boolean hide) {
       settingService.set(Context.GLOBAL, Scope.GLOBAL, HIDE_DOCUMENT_ACTION_ACTIVITIES, SettingValue.create(hide));
-
   }
 
   public FunctionalConfigurationResponse getConfiguration() {
