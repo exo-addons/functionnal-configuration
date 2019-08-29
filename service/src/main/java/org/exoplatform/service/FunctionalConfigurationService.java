@@ -3,6 +3,7 @@ package org.exoplatform.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.api.settings.SettingService;
@@ -10,16 +11,13 @@ import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.commons.api.settings.data.Context;
 import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.rest.response.FunctionalConfigurationResponse;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
-import javax.ws.rs.core.Response;
-
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
 public class FunctionalConfigurationService {
 
-  private final String DOCUMENT_ACTION_ACTIVITIES_HIDDEN = "DOCUMENT_ACTION_ACTIVITIES_HIDDEN";
+  private final String HIDE_DOCUMENT_ACTION_ACTIVITIES = "HIDE_DOCUMENT_ACTION_ACTIVITIES";
 
   public static final String HIDE_USER_ACTIVITY_COMPOSER = "hideUserActivityComposer";
   
@@ -77,8 +75,8 @@ public class FunctionalConfigurationService {
     settingService.set(Context.GLOBAL, Scope.GLOBAL, SPACES_WITHOUT_ACTIVITY_COMPOSER, SettingValue.create(spacesWithoutActivityComposer.replace((spaces.startsWith(",") ? spaces.substring(0).replace(",", SPACES_SEPARATOR) : spaces.replace(",", SPACES_SEPARATOR)) + SPACES_SEPARATOR, "")));
   }
   
-  public void configureUserActivityComposer(String hideUserActivityComposer) {
-    settingService.set(Context.GLOBAL, Scope.GLOBAL, HIDE_USER_ACTIVITY_COMPOSER, SettingValue.create(hideUserActivityComposer));
+  public void updateUserActivityComposer(boolean hide) {
+    settingService.set(Context.GLOBAL, Scope.GLOBAL, HIDE_USER_ACTIVITY_COMPOSER, SettingValue.create(hide));
   }
   
   private void initSpaces() throws Exception {
@@ -99,15 +97,30 @@ public class FunctionalConfigurationService {
     }
   }
 
-  public void updateDocumentActionActivitiesVisibility(String hiddenAsString) {
+  public void updateDocumentActionActivity(boolean hide) {
+      settingService.set(Context.GLOBAL, Scope.GLOBAL, HIDE_DOCUMENT_ACTION_ACTIVITIES, SettingValue.create(hide));
 
-    if (isNotEmpty(hiddenAsString) && (hiddenAsString.equals("true") || hiddenAsString.equals("false"))) {
+  }
 
-      boolean booleanStatus = hiddenAsString.equals("true");
+  public FunctionalConfigurationResponse getConfiguration() {
 
-      settingService.set(Context.GLOBAL, Scope.GLOBAL, DOCUMENT_ACTION_ACTIVITIES_HIDDEN, SettingValue.create(booleanStatus));
+    boolean settingValueDocumentAction = getSettingValueAsBoolean(settingService.get(Context.GLOBAL, Scope.GLOBAL, HIDE_DOCUMENT_ACTION_ACTIVITIES));
+    boolean settingValueActivityComposer = getSettingValueAsBoolean(settingService.get(Context.GLOBAL, Scope.GLOBAL, HIDE_USER_ACTIVITY_COMPOSER));
 
-//      return Response.ok(status).build();
+    FunctionalConfigurationResponse response = new FunctionalConfigurationResponse();
+    response.setHideComposerActivities(settingValueActivityComposer);
+    response.setHideDocumentActionActivities(settingValueDocumentAction);
+
+    return response;
+  }
+
+  private boolean getSettingValueAsBoolean(SettingValue<?> settingValue) {
+
+    if (Objects.isNull(settingValue)
+            || Objects.isNull(settingValue.getValue())
+            || StringUtils.isEmpty(settingValue.getValue().toString())) {
+      return false;
     }
+    return Boolean.valueOf(settingValue.getValue().toString());
   }
 }

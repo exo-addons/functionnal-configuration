@@ -1,6 +1,7 @@
 package org.exoplatform.rest;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -13,6 +14,9 @@ import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.rest.response.FunctionalConfigurationResponse;
 import org.exoplatform.service.FunctionalConfigurationService;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Path("/functional-configuration")
 public class FunctionalConfigurationController implements ResourceContainer {
@@ -41,40 +45,39 @@ public class FunctionalConfigurationController implements ResourceContainer {
     @Path("/configuration")
     public Response getConfiguration(){
 
-        FunctionalConfigurationResponse response = new FunctionalConfigurationResponse();
-        response.setHideComposerActivities(true);
-        response.setHideDocumentActionActivities(true);
-
         return Response
-                .ok(response, MediaType.APPLICATION_JSON)
+                .ok(functionalConfigurationService.getConfiguration(), MediaType.APPLICATION_JSON)
                 .build();
     }
 
-
     @PUT
-    @Path("/hide-document-activities")
-    public Response updateDocumentActionActivitiesVisibility(@QueryParam("hidden") String hidden) {
+    @Path("/document-activity")
+    public Response updateDocumentActionActivitiesVisibility(@QueryParam("hidden") String hiddenAsString) {
 
-//        functionalConfigurationService.updateDocumentActionActivitiesVisibility(hidden);
+        if (!isValidBooleanParameter(hiddenAsString)) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        functionalConfigurationService.updateDocumentActionActivity(Boolean.valueOf(hiddenAsString));
 
         return Response.ok().build();
     }
 
+    private boolean isValidBooleanParameter(String value) {
+        List<String> booleansValueAsString = Arrays.asList("true", "false");
+
+        return isNotEmpty(value) && booleansValueAsString.contains(value);
+    }
 
     @PUT
     @Path("/composer-activity")
-    public Response updateComposerActivity(@QueryParam("hidden") String hidden) {
+    public Response updateComposerActivity(@QueryParam("hidden") String hiddenAsString) {
 
-//        functionalConfigurationService.updateDocumentActionActivitiesVisibility(hidden);
+        if (!isValidBooleanParameter(hiddenAsString)) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
 
+        functionalConfigurationService.updateUserActivityComposer(Boolean.valueOf(hiddenAsString));
         return Response.ok().build();
     }
-
-    //todo change get to post
-//    @GET
-//    @Path("/set-listening")
-//    public Response setListeningDocumentActivity(@QueryParam("status") String status) {
-//
-//    }
-
 }
