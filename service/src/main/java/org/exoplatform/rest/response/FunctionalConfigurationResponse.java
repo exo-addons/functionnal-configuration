@@ -1,10 +1,14 @@
 package org.exoplatform.rest.response;
 
+import java.util.List;
+
 public class FunctionalConfigurationResponse {
 
     private boolean hideDocumentActionActivities;
 
     private boolean hideComposerActivities;
+
+    private List<SpaceConfiguration> spaceConfigurations;
 
     public boolean isHideDocumentActionActivities() {
         return hideDocumentActionActivities;
@@ -20,5 +24,13 @@ public class FunctionalConfigurationResponse {
 
     public void setHideComposerActivities(boolean hideComposerActivities) {
         this.hideComposerActivities = hideComposerActivities;
+    }
+
+    public List<SpaceConfiguration> getSpaceConfigurations() {
+        return spaceConfigurations;
+    }
+
+    public void setSpaceConfigurations(List<SpaceConfiguration> spaceConfigurations) {
+        this.spaceConfigurations = spaceConfigurations;
     }
 }
