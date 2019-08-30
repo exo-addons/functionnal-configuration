@@ -49,14 +49,14 @@
     <component-plugin profiles="all">
       <name>FileActivityNotify.event.FileRemoved</name>
       <set-method>addListener</set-method>
-      <type>org.exoplatform.wcm.ext.component.activity.listener.FileRemoveActivityListener</type>
+      <type>org.exoplatform.listener.document.FileRemoveActivityWithConfigurationListener</type>
       <description>this listener will create a new comment/activity when a property has been removed</description>
     </component-plugin>	
 
     <component-plugin profiles="all">
       <name>FileActivityNotify.event.PropertyUpdated</name>
       <set-method>addListener</set-method>
-      <type>org.exoplatform.wcm.ext.component.activity.listener.FileUpdateActivityListener</type>
+      <type>org.exoplatform.listener.document.FileUpdateActivityWithConfigurationListener</type>
       <description>this listener will create a new comment when a property has been	updated</description>
     </component-plugin>
 

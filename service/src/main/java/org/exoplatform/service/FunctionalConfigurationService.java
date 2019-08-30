@@ -12,7 +12,7 @@ import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.commons.api.settings.data.Context;
 import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.rest.response.FunctionalConfigurationResponse;
+import org.exoplatform.rest.response.FunctionalConfiguration;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
@@ -78,9 +78,6 @@ public class FunctionalConfigurationService {
 
 
 
-
-
-  
   private void initSpaces() throws Exception {
     ListAccess<Space> allSpacesListAccess = spaceService.getAllSpacesWithListAccess();
     Space[] allSpaces = allSpacesListAccess.load(0, allSpacesListAccess.getSize());
@@ -100,13 +97,6 @@ public class FunctionalConfigurationService {
   }
 
 
-  /**
-   * configuration of show/hide activity composer
-   * @param hide
-   */
-//  public void updateUserActivityComposer(String hide) {
-//    settingService.set(Context.GLOBAL, Scope.GLOBAL, HIDE_USER_ACTIVITY_COMPOSER, SettingValue.create(hide));
-//  }
 
   /**
    * configuration of show/hide document action in space on activity
@@ -116,24 +106,21 @@ public class FunctionalConfigurationService {
       settingService.set(Context.GLOBAL, Scope.GLOBAL, HIDE_DOCUMENT_ACTION_ACTIVITIES, SettingValue.create(hide));
   }
 
-  public FunctionalConfigurationResponse getConfiguration() {
+  public FunctionalConfiguration getConfiguration() {
 
-    boolean settingValueDocumentAction = getDocumentActionActivityConfiguration();
-    boolean settingValueActivityComposer = getActivityComposerConfiguration();
+    FunctionalConfiguration response = new FunctionalConfiguration();
 
-    FunctionalConfigurationResponse response = new FunctionalConfigurationResponse();
-
-    response.setHideComposerActivities(settingValueActivityComposer);
-    response.setHideDocumentActionActivities(settingValueDocumentAction);
+    response.setHideComposerActivities(isActivityComposerHidden());
+    response.setHideDocumentActionActivities(isDocumentActionActivityHidden());
 
     return response;
   }
 
-  public boolean getDocumentActionActivityConfiguration() {
+  public boolean isDocumentActionActivityHidden() {
     return getSettingValueAsBoolean(settingService.get(Context.GLOBAL, Scope.GLOBAL, HIDE_DOCUMENT_ACTION_ACTIVITIES));
   }
 
-  private boolean getActivityComposerConfiguration() {
+  private boolean isActivityComposerHidden() {
     return getSettingValueAsBoolean(settingService.get(Context.GLOBAL, Scope.GLOBAL, HIDE_USER_ACTIVITY_COMPOSER));
   }
 
