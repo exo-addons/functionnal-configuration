@@ -1,17 +1,11 @@
 package org.exoplatform.rest;
 
-import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.exoplatform.commons.api.settings.SettingService;
-import org.exoplatform.commons.api.settings.SettingValue;
-import org.exoplatform.commons.api.settings.data.Context;
-import org.exoplatform.commons.api.settings.data.Scope;
-import org.exoplatform.rest.response.FunctionalConfigurationResponse;
 import org.exoplatform.service.FunctionalConfigurationService;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
@@ -52,32 +46,31 @@ public class FunctionalConfigurationController implements ResourceContainer {
 
     @PUT
     @Path("/document-activity")
-    public Response updateDocumentActionActivitiesVisibility(@QueryParam("hidden") String hiddenAsString) {
+    public Response updateDocumentActionActivitiesVisibility(@QueryParam("hidden") String hidden) {
 
-        if (!isValidBooleanParameter(hiddenAsString)) {
+        if (!isValidBooleanParameter(hidden)) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        functionalConfigurationService.updateDocumentActionActivity(Boolean.valueOf(hiddenAsString));
+        functionalConfigurationService.configureActivityComposer(hidden);
 
         return Response.ok().build();
     }
 
     private boolean isValidBooleanParameter(String value) {
         List<String> booleansValueAsString = Arrays.asList("true", "false");
-
         return isNotEmpty(value) && booleansValueAsString.contains(value);
     }
 
     @PUT
     @Path("/composer-activity")
-    public Response updateComposerActivity(@QueryParam("hidden") String hiddenAsString) {
+    public Response updateComposerActivity(@QueryParam("hidden") String hidden) {
 
-        if (!isValidBooleanParameter(hiddenAsString)) {
+        if (!isValidBooleanParameter(hidden)) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        functionalConfigurationService.updateUserActivityComposer(Boolean.valueOf(hiddenAsString));
+        functionalConfigurationService.configureActivityComposer(hidden);
         return Response.ok().build();
     }
 }

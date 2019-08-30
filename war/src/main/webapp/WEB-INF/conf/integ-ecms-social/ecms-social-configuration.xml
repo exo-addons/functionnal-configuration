@@ -14,7 +14,7 @@
     <component-plugin profiles="all">
       <name>ActivityNotify.event.FileCreated</name>
       <set-method>addListener</set-method>
-      <type>org.exoplatform.listener.document.FileCreateDocumentActivityListenerIfActive</type>
+      <type>org.exoplatform.listener.document.FileCreateActivityWithConfigurationListener</type>
       <description>this listener will publish an activity when a file has been	created and initiated state</description>
     </component-plugin>
 		
