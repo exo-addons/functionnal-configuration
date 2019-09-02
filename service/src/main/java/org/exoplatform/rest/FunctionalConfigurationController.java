@@ -1,42 +1,32 @@
 package org.exoplatform.rest;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.exoplatform.rest.utils.RestUtils.isValidBooleanParameter;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.exoplatform.service.FunctionalConfigurationService;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
-import java.util.Arrays;
-import java.util.List;
-
 @Path("/functional-configuration")
 public class FunctionalConfigurationController implements ResourceContainer {
+
+    private static final String DOCUMENT_ACTIVITY_ENDPOINT = "/document-activity";
+    private static final String CONFIGURATION_ENDPOINT = "/configuration";
+    private static final String COMPOSER_ACTIVITY_ENDPOINT = "/composer-activity";
+
     private FunctionalConfigurationService functionalConfigurationService;
 
     public FunctionalConfigurationController(FunctionalConfigurationService functionalConfigurationService){
         this.functionalConfigurationService = functionalConfigurationService;
     }
 
-//    @POST
-//    @Path("/hide-user-activity-composer")
-//    public Response hideUserActivity(String isHidden) {
-//        settingService.set(Context.GLOBAL, Scope.GLOBAL, "hideUserActivityComposer", SettingValue.create(isHidden));
-//        return Response.ok().build();
-//    }
-
-//    @POST
-//    @Path("/hide-document-activities")
-//    public Response hideDocumentsActionsActivity(String isHidden) {
-//
-//        settingService.set(Context.GLOBAL, Scope.GLOBAL, "DOES_DOCUMENT_EDITION_SHOULD_CREATE_ACTIVITY", SettingValue.create(isHidden));
-//        return Response.ok().build();
-//    }
-
     @GET
-    @Path("/configuration")
+    @Path(CONFIGURATION_ENDPOINT)
     public Response getConfiguration(){
 
         return Response
@@ -45,7 +35,7 @@ public class FunctionalConfigurationController implements ResourceContainer {
     }
 
     @PUT
-    @Path("/document-activity")
+    @Path(DOCUMENT_ACTIVITY_ENDPOINT)
     public Response updateDocumentActionActivitiesVisibility(@QueryParam("hidden") String hidden) {
 
         if (!isValidBooleanParameter(hidden)) {
@@ -57,13 +47,8 @@ public class FunctionalConfigurationController implements ResourceContainer {
         return Response.ok().build();
     }
 
-    private boolean isValidBooleanParameter(String value) {
-        List<String> booleansValueAsString = Arrays.asList("true", "false");
-        return isNotEmpty(value) && booleansValueAsString.contains(value);
-    }
-
     @PUT
-    @Path("/composer-activity")
+    @Path(COMPOSER_ACTIVITY_ENDPOINT)
     public Response updateComposerActivity(@QueryParam("hidden") String hidden) {
 
         if (!isValidBooleanParameter(hidden)) {

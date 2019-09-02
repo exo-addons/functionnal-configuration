@@ -13,12 +13,13 @@ import org.exoplatform.commons.api.settings.data.Context;
 import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.rest.response.FunctionalConfiguration;
+import org.exoplatform.rest.response.SpaceConfiguration;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
 public class FunctionalConfigurationService {
 
-  public static final String HIDE_DOCUMENT_ACTION_ACTIVITIES = "HIDE_DOCUMENT_ACTION_ACTIVITIES";
+  static final String HIDE_DOCUMENT_ACTION_ACTIVITIES = "HIDE_DOCUMENT_ACTION_ACTIVITIES";
 
   public static final String HIDE_USER_ACTIVITY_COMPOSER = "hideUserActivityComposer";
   
@@ -34,18 +35,11 @@ public class FunctionalConfigurationService {
   private List<Space> listSpacesWithoutActivityComposer;
   private SpaceService spaceService;
 
-  /**
-   * @param settingService
-   * @param spaceService
-   */
   public FunctionalConfigurationService(SettingService settingService, SpaceService spaceService) {
     this.settingService = settingService;
     this.spaceService = spaceService;
   }
 
-  /**
-   * @return the listSpacesWithActivityComposer
-   */
   public List<Space> getListSpacesWithActivityComposer() throws Exception {
     initSpaces();
     return listSpacesWithActivityComposer;
@@ -76,8 +70,6 @@ public class FunctionalConfigurationService {
     settingService.set(Context.GLOBAL, Scope.GLOBAL, SPACES_WITHOUT_ACTIVITY_COMPOSER, SettingValue.create(spacesWithoutActivityComposer.replace((spaces.startsWith(",") ? spaces.substring(0).replace(",", SPACES_SEPARATOR) : spaces.replace(",", SPACES_SEPARATOR)) + SPACES_SEPARATOR, "")));
   }
 
-
-
   private void initSpaces() throws Exception {
     ListAccess<Space> allSpacesListAccess = spaceService.getAllSpacesWithListAccess();
     Space[] allSpaces = allSpacesListAccess.load(0, allSpacesListAccess.getSize());
@@ -96,6 +88,11 @@ public class FunctionalConfigurationService {
     }
   }
 
+  public List<SpaceConfiguration> findSpaceConfigurations() {
+//    spaceService.get
+    return null;
+  }
+
 
 
   /**
@@ -108,12 +105,21 @@ public class FunctionalConfigurationService {
 
   public FunctionalConfiguration getConfiguration() {
 
-    FunctionalConfiguration response = new FunctionalConfiguration();
+    FunctionalConfiguration configuration = new FunctionalConfiguration();
 
-    response.setHideComposerActivities(isActivityComposerHidden());
-    response.setHideDocumentActionActivities(isDocumentActionActivityHidden());
+    configuration.setHideComposerActivities(isActivityComposerHidden());
+    configuration.setHideDocumentActionActivities(isDocumentActionActivityHidden());
 
-    return response;
+
+//    ListAccess<Space> spaces = spaceService.getAllSpacesByFilter(null);
+//
+//    SettingValue spacesWithoutActivityComposerSetting = settingService.get(Context.GLOBAL, Scope.GLOBAL, SPACES_WITHOUT_ACTIVITY_COMPOSER);
+
+//    getListSpacesWithActivityComposer();
+
+//    configuration.setSpaceConfigurations();
+
+    return configuration;
   }
 
   public boolean isDocumentActionActivityHidden() {
