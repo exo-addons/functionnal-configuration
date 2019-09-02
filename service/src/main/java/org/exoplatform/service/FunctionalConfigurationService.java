@@ -101,19 +101,46 @@ public class FunctionalConfigurationService {
     }
   }
 
-  public List<SpaceConfiguration> findSpaceConfigurations() throws Exception {
+  private List<SpaceConfiguration> findSpaceConfigurations() {
 
-    ListAccess<Space> allSpacesListAccess = spaceService.getAllSpacesWithListAccess();
-    List<Space> spaces = asList(allSpacesListAccess.load(0, allSpacesListAccess.getSize()));
+    List<SpaceConfiguration> spaceConfigurations = new ArrayList<>();
 
+    for (Space space: findAllSpaces()) {
 
-    SettingValue spacesWithoutActivityComposerSetting = settingService.get(Context.GLOBAL, Scope.GLOBAL, SPACES_WITHOUT_ACTIVITY_COMPOSER);
+      SpaceConfiguration spaceConfiguration = new SpaceConfiguration();
 
+      Map<String, Integer> highlightConfiguration = loadHighlightConfigAsMap();
+      Set<String> activityComposerConfiguration = loadActivityComposerConfigurationAsSet();
 
+      boolean hideActivityComposer = activityComposerConfiguration.stream().anyMatch(f -> space.getPrettyName().equals(f));
 
-    return null;
+      spaceConfiguration.setId(space.getId());
+      spaceConfiguration.setDisplayName(space.getDisplayName());
+      spaceConfiguration.setDescription(space.getDescription());
+      spaceConfiguration.setHideActivityComposer(hideActivityComposer);
+
+      if (highlightConfiguration.containsKey(space.getPrettyName())) {
+        HighlightSpaceConfiguration highlightConfiguration1 = new HighlightSpaceConfiguration();
+        highlightConfiguration1.setHighlight(true);
+        highlightConfiguration1.setOrder(highlightConfiguration.get(space.getPrettyName()));
+        spaceConfiguration.setHighlightConfiguration(highlightConfiguration1);
+      }
+      spaceConfigurations.add(spaceConfiguration);
+    }
+
+    return spaceConfigurations;
   }
 
+  protected List<Space> findAllSpaces() {
+
+    try {
+      ListAccess<Space> allSpacesListAccess = spaceService.getAllSpacesWithListAccess();
+      return asList(allSpacesListAccess.load(0, allSpacesListAccess.getSize()));
+    } catch (Exception e) {
+//      e.printStackTrace();
+      throw new FunctionalConfigurationRuntimeException("space.error.loading");
+    }
+  }
 
 
   /**
@@ -131,14 +158,7 @@ public class FunctionalConfigurationService {
     configuration.setHideComposerActivities(isActivityComposerHidden());
     configuration.setHideDocumentActionActivities(isDocumentActionActivityHidden());
 
-
-//    ListAccess<Space> spaces = spaceService.getAllSpacesByFilter(null);
-//
-//    SettingValue spacesWithoutActivityComposerSetting = settingService.get(Context.GLOBAL, Scope.GLOBAL, SPACES_WITHOUT_ACTIVITY_COMPOSER);
-
-//    getListSpacesWithActivityComposer();
-
-//    configuration.setSpaceConfigurations();
+    configuration.setSpaceConfigurations(findSpaceConfigurations());
 
     return configuration;
   }
