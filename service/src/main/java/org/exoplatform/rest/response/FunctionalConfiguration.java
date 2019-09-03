@@ -1,14 +1,17 @@
 package org.exoplatform.rest.response;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class FunctionalConfiguration {
+public class FunctionalConfiguration implements Serializable {
 
     private boolean hideDocumentActionActivities;
 
     private boolean hideComposerActivities;
 
     private List<SpaceConfiguration> spaceConfigurations;
+
+    public FunctionalConfiguration() {}
 
     public boolean isHideDocumentActionActivities() {
         return hideDocumentActionActivities;

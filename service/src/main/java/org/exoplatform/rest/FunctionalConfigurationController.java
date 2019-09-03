@@ -21,7 +21,6 @@ public class FunctionalConfigurationController implements ResourceContainer {
     private static final String COMPOSER_ACTIVITY_ENDPOINT = "/composer-activity";
     private static final String UPDATE_SPACE_CONFIGURATION_ENDPOINT = "/configuration/space";
 
-
     private FunctionalConfigurationService functionalConfigurationService;
 
     public FunctionalConfigurationController(FunctionalConfigurationService functionalConfigurationService){
@@ -69,6 +68,8 @@ public class FunctionalConfigurationController implements ResourceContainer {
 
         SpaceConfiguration spaceConfiguration = functionalConfigurationService.updateSpaceConfiguration(space);
 
-        return Response.ok(spaceConfiguration).build();
+        return Response
+                .ok(spaceConfiguration, MediaType.APPLICATION_JSON)
+                .build();
     }
 }

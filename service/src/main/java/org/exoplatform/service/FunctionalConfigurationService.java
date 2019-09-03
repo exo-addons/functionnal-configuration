@@ -109,7 +109,7 @@ public class FunctionalConfigurationService {
 
       SpaceConfiguration spaceConfiguration = new SpaceConfiguration();
 
-      Map<String, Integer> highlightConfiguration = loadHighlightConfigAsMap();
+      Map<String, Integer> highlightConfigurationMap = loadHighlightConfigAsMap();
       Set<String> activityComposerConfiguration = loadActivityComposerConfigurationAsSet();
 
       boolean hideActivityComposer = activityComposerConfiguration.stream().anyMatch(f -> space.getPrettyName().equals(f));
@@ -119,12 +119,15 @@ public class FunctionalConfigurationService {
       spaceConfiguration.setDescription(space.getDescription());
       spaceConfiguration.setHideActivityComposer(hideActivityComposer);
 
-      if (highlightConfiguration.containsKey(space.getPrettyName())) {
-        HighlightSpaceConfiguration highlightConfiguration1 = new HighlightSpaceConfiguration();
-        highlightConfiguration1.setHighlight(true);
-        highlightConfiguration1.setOrder(highlightConfiguration.get(space.getPrettyName()));
-        spaceConfiguration.setHighlightConfiguration(highlightConfiguration1);
+      HighlightSpaceConfiguration highlightConfiguration = new HighlightSpaceConfiguration();
+      if (highlightConfigurationMap.containsKey(space.getPrettyName())) {
+        highlightConfiguration.setHighlight(true);
+        highlightConfiguration.setOrder(highlightConfigurationMap.get(space.getPrettyName()));
+      } else {
+        highlightConfiguration.setHighlight(false);
       }
+
+      spaceConfiguration.setHighlightConfiguration(highlightConfiguration);
       spaceConfigurations.add(spaceConfiguration);
     }
 
@@ -260,7 +263,7 @@ public class FunctionalConfigurationService {
             loadAndParseSettings(SPACES_WITHOUT_ACTIVITY_COMPOSER));
   }
 
-  private Map<String, Integer> loadHighlightConfigAsMap() {
+  public Map<String, Integer> loadHighlightConfigAsMap() {
 
     List<String> settings = loadAndParseSettings(HIGHLIGHT_SPACES);
     return convertHighlightSpacesConfigurationsFromListToMap(settings);
