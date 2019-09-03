@@ -137,7 +137,6 @@ public class FunctionalConfigurationService {
       ListAccess<Space> allSpacesListAccess = spaceService.getAllSpacesWithListAccess();
       return asList(allSpacesListAccess.load(0, allSpacesListAccess.getSize()));
     } catch (Exception e) {
-//      e.printStackTrace();
       throw new FunctionalConfigurationRuntimeException("space.error.loading");
     }
   }
