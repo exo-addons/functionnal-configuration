@@ -117,7 +117,7 @@ public class FunctionalConfigurationService {
       spaceConfiguration.setId(space.getId());
       spaceConfiguration.setDisplayName(space.getDisplayName());
       spaceConfiguration.setDescription(space.getDescription());
-      spaceConfiguration.setHideActivityComposer(hideActivityComposer);
+      spaceConfiguration.setActivityComposerVisible(!hideActivityComposer);
 
       HighlightSpaceConfiguration highlightConfiguration = new HighlightSpaceConfiguration();
       if (highlightConfigurationMap.containsKey(space.getPrettyName())) {
@@ -210,7 +210,7 @@ public class FunctionalConfigurationService {
 
     String spacePrettyName = space.getPrettyName();
 
-    if (spaceConfiguration.isHideActivityComposer()) {
+    if (!spaceConfiguration.isActivityComposerVisible()) {
       activityComposerConfigurations.add(spacePrettyName);
     }  else {
       activityComposerConfigurations = activityComposerConfigurations.stream()
