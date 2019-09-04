@@ -44,14 +44,14 @@ public class FunctionalConfigurationController implements ResourceContainer {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        functionalConfigurationService.configureActivityComposer(hidden);
+        functionalConfigurationService.configureDocumentActionActivities(hidden);
 
         return Response.ok().build();
     }
 
     @PUT
     @Path(COMPOSER_ACTIVITY_ENDPOINT)
-    public Response updateComposerActivity(@QueryParam("visible") String hidden) {
+    public Response updateComposerActivity(@QueryParam("hidden") String hidden) {
 
         if (!isValidBooleanParameter(hidden)) {
             return Response.status(Response.Status.BAD_REQUEST).build();

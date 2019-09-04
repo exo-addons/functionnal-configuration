@@ -150,7 +150,12 @@ public class FunctionalConfigurationService {
    * @param hide
    */
   public void configureActivityComposer(String hide) {
-      settingService.set(Context.GLOBAL, Scope.GLOBAL, HIDE_DOCUMENT_ACTION_ACTIVITIES, SettingValue.create(hide));
+      settingService.set(Context.GLOBAL, Scope.GLOBAL, HIDE_USER_ACTIVITY_COMPOSER, SettingValue.create(hide));
+  }
+
+
+  public void configureDocumentActionActivities(String hidden) {
+    settingService.set(Context.GLOBAL, Scope.GLOBAL, HIDE_DOCUMENT_ACTION_ACTIVITIES, SettingValue.create(hidden));
   }
 
   public FunctionalConfiguration getConfiguration() {
