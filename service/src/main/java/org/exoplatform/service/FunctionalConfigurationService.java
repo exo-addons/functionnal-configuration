@@ -34,7 +34,7 @@ public class FunctionalConfigurationService {
 
   public static final String HIGHLIGHT_SPACES = "highlightspaces";
 
-  // SEPARATOR between space_pretty_name and highlight_space_order : PRETTY_NAME#ORDER
+  // SEPARATOR between space_id and highlight_space_order : ID#ORDER
   public static final String HIGHLIGHT_SPACES_SEPARATOR = "#";
 
   private static final String SETTINGS_SEPARATOR = ";";
@@ -92,7 +92,7 @@ public class FunctionalConfigurationService {
 
 
     for (Space space : allSpaces) {
-      if (!spacesWithoutActivityComposer.isEmpty() && spacesWithoutList.contains(space.getPrettyName())) {
+      if (!spacesWithoutActivityComposer.isEmpty() && spacesWithoutList.contains(space.getId())) {
         listSpacesWithoutActivityComposer.add(space);
       }
       else {
@@ -112,7 +112,7 @@ public class FunctionalConfigurationService {
       Map<String, Integer> highlightConfigurationMap = loadHighlightConfigAsMap();
       Set<String> activityComposerConfiguration = loadActivityComposerConfigurationAsSet();
 
-      boolean hideActivityComposer = activityComposerConfiguration.stream().anyMatch(f -> space.getPrettyName().equals(f));
+      boolean hideActivityComposer = activityComposerConfiguration.stream().anyMatch(f -> space.getId().equals(f));
 
       spaceConfiguration.setId(space.getId());
       spaceConfiguration.setDisplayName(space.getDisplayName());
@@ -120,9 +120,9 @@ public class FunctionalConfigurationService {
       spaceConfiguration.setActivityComposerVisible(!hideActivityComposer);
 
       HighlightSpaceConfiguration highlightConfiguration = new HighlightSpaceConfiguration();
-      if (highlightConfigurationMap.containsKey(space.getPrettyName())) {
+      if (highlightConfigurationMap.containsKey(space.getId())) {
         highlightConfiguration.setHighlight(true);
-        highlightConfiguration.setOrder(highlightConfigurationMap.get(space.getPrettyName()));
+        highlightConfiguration.setOrder(highlightConfigurationMap.get(space.getId()));
       } else {
         highlightConfiguration.setHighlight(false);
       }
@@ -213,13 +213,13 @@ public class FunctionalConfigurationService {
 
   private void updateAndSaveActivityComposerConfigurationSet(SpaceConfiguration spaceConfiguration, Space space, Set<String> activityComposerConfigurations) {
 
-    String spacePrettyName = space.getPrettyName();
+    String spaceId = space.getId();
 
     if (!spaceConfiguration.isActivityComposerVisible()) {
-      activityComposerConfigurations.add(spacePrettyName);
+      activityComposerConfigurations.add(spaceId);
     }  else {
       activityComposerConfigurations = activityComposerConfigurations.stream()
-              .filter(configuration -> !StringUtils.equals(spacePrettyName, configuration))
+              .filter(configuration -> !StringUtils.equals(spaceId, configuration))
               .collect(Collectors.toSet());
     }
 
@@ -228,18 +228,18 @@ public class FunctionalConfigurationService {
 
   private void updateAndSaveHighlightConfigurationMap(Space space, HighlightSpaceConfiguration highlightConfiguration, Map<String, Integer> highlightConfigurations) {
 
-    String spacePrettyName = space.getPrettyName();
+    String spaceId = space.getId();
 
     if (highlightConfiguration.isHighlight()) {
 
-      if (!highlightConfigurations.containsKey(spacePrettyName)) {
-        highlightConfigurations.put(spacePrettyName, null);
+      if (!highlightConfigurations.containsKey(spaceId)) {
+        highlightConfigurations.put(spaceId, null);
       }
 
-      highlightConfigurations.put(spacePrettyName, highlightConfiguration.getOrder());
+      highlightConfigurations.put(spaceId, highlightConfiguration.getOrder());
 
     } else {
-      highlightConfigurations.remove(spacePrettyName);
+      highlightConfigurations.remove(spaceId);
     }
 
     saveHighlightConfiguration(highlightConfigurations);
