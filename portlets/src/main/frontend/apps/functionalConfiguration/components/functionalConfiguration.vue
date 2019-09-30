@@ -301,8 +301,8 @@ export default {
         const description = space.description ? space.description : "";
 
         return (
-          displayName.includes(this.spaceFilter) ||
-          description.includes(this.spaceFilter)
+          displayName.toLowerCase().includes(this.spaceFilter.toLowerCase()) ||
+          description.toLowerCase().includes(this.spaceFilter.toLowerCase())
           );
       }
 
