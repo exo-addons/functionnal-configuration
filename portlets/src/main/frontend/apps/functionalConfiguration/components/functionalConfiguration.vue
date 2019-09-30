@@ -322,11 +322,41 @@ export default {
 
         if (this.highlightConfigurationOrder === SORT_STATE.ASC){
             spaces = spaces.sort(function(a, b) {
-                return a.highlightConfiguration.order - b.highlightConfiguration.order;
+                if (!a.highlightConfiguration.highlight && !b.highlightConfiguration.highlight) {
+                    //spaces are not highlighted, sort on name
+                    return a.displayName.localeCompare(b.displayName);
+                } else if (a.highlightConfiguration.highlight && !b.highlightConfiguration.highlight) {
+                    //space a is hightlighted, space b is not, so a should be after b
+                    return 1;
+                } else if (!a.highlightConfiguration.highlight && b.highlightConfiguration.highlight) {
+                    //space a is not hightlighted, space b is, so b should be after a
+                    return -1;
+                } else if (a.highlightConfiguration.order==b.highlightConfiguration.order) {
+                    //space are hightlighted with same rank, sort on name;
+                    return a.displayName.localeCompare(b.displayName);
+                } else {
+                    //space are hightlighted, with different rank
+                    return a.highlightConfiguration.order>b.highlightConfiguration.order;
+                }
             });
         } else if(this.highlightConfigurationOrder === SORT_STATE.DESC){
-            spaces = spaces.sort(function(b, a) {
-                return a.highlightConfiguration.order - b.highlightConfiguration.order;
+            spaces = spaces.sort(function(a, b) {
+                if (!b.highlightConfiguration.highlight && !a.highlightConfiguration.highlight) {
+                    //spaces are not highlighted, sort on name
+                    return b.displayName.localeCompare(a.displayName);
+                } else if (b.highlightConfiguration.highlight && !a.highlightConfiguration.highlight) {
+                    //space b is hightlighted, space a is not, so b should be after a
+                    return 1;
+                } else if (!b.highlightConfiguration.highlight && a.highlightConfiguration.highlight) {
+                    //space b is not hightlighted, space a is, so a should be after b
+                    return -1;
+                } else if (b.highlightConfiguration.order==a.highlightConfiguration.order) {
+                    //space are hightlighted with same rank, sort on name;
+                    return b.displayName.localeCompare(a.displayName);
+                } else {
+                    //space are hightlighted, with different rank
+                    return b.highlightConfiguration.order>a.highlightConfiguration.order;
+                }
             });
         }
 
