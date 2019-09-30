@@ -44,3 +44,5 @@ node_modules/
 node/
 package-lock.json
 vue/
+*.bundle.js
+*.bundle.js.map
