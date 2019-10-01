@@ -232,12 +232,16 @@ export default {
           .then(data => {
 
             space.activityComposerVisible = data.activityComposerVisible;
+            var needReload = !(space.highlightConfiguration.highlight==data.highlightConfiguration.highlight && space.highlightConfiguration.order==data.highlightConfiguration.order);
             space.highlightConfiguration = data.highlightConfiguration;
         
             self.cancelEdit(space);
             delete self.currentSpaceSaved;
 
-              this.successResponse();
+            this.successResponse();
+            if (needReload) {
+                location.reload();
+            }
           })
             .catch(error => {
                 this.failedResponse();
