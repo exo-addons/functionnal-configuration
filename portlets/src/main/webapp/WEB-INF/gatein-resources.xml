@@ -26,4 +26,32 @@
         </depends>
     </module>
 
+    <module>
+        <name>highlightSpacesViewBundle</name>
+        <script>
+            <minify>false</minify>
+            <path>/js/highlightSpacesView.bundle.js</path>
+        </script>
+        <depends>
+            <module>vue</module>
+        </depends>
+        <depends>
+            <module>eXoVueI18n</module>
+        </depends>
+    </module>
+
+    <module>
+        <name>highlightSpacesEditBundle</name>
+        <script>
+            <minify>false</minify>
+            <path>/js/highlightSpacesEdit.bundle.js</path>
+        </script>
+        <depends>
+            <module>vue</module>
+        </depends>
+        <depends>
+            <module>eXoVueI18n</module>
+        </depends>
+    </module>
+
 </gatein-resources>

@@ -1,22 +1,5 @@
 package org.exoplatform.service;
 
-import static org.exoplatform.service.FunctionalConfigurationService.*;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.commons.api.settings.data.Context;
@@ -28,6 +11,23 @@ import org.exoplatform.service.exception.FunctionalConfigurationRuntimeException
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.test.matchers.SettingValueMatcher;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.List;
+import java.util.Objects;
+
+import static java.util.Arrays.asList;
+import static org.exoplatform.service.FunctionalConfigurationService.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FunctionalConfigurationServiceTest {
@@ -243,7 +243,83 @@ public class FunctionalConfigurationServiceTest {
             space3.setDisplayName("DISPLAY_NAME_3");
             space3.setDescription("DESCRIPTION_3");
 
-            return Arrays.asList(space1, space2, space3);
+            return asList(space1, space2, space3);
         }
+
+
+    }
+
+    class FunctionalConfigurationWithGroupsLoadingService extends FunctionalConfigurationWithSpacesLoadingService {
+
+        public FunctionalConfigurationWithGroupsLoadingService(SettingService settingService, SpaceService spaceService) {
+            super(settingService, spaceService);
+        }
+
+        @Override
+        protected List<SpaceConfiguration> findSpaceConfigurations() {
+
+            SpaceConfiguration space1 = new SpaceConfiguration();
+            space1.setId("1");
+            HighlightSpaceConfiguration highlightConfiguration1 = new HighlightSpaceConfiguration();
+            highlightConfiguration1.setGroupIdentifier("group1");
+            highlightConfiguration1.setHighlight(true);
+            space1.setHighlightConfiguration(highlightConfiguration1);
+
+            SpaceConfiguration space2 = new SpaceConfiguration();
+            space2.setId("2");
+            HighlightSpaceConfiguration highlightConfiguration2 = new HighlightSpaceConfiguration();
+            highlightConfiguration2.setGroupIdentifier("group2");
+            highlightConfiguration2.setHighlight(true);
+            space2.setHighlightConfiguration(highlightConfiguration2);
+
+            SpaceConfiguration space3 = new SpaceConfiguration();
+            HighlightSpaceConfiguration highlightConfiguration3 = new HighlightSpaceConfiguration();
+            highlightConfiguration3.setHighlight(true);
+            space3.setHighlightConfiguration(highlightConfiguration3);
+            space3.setId("3");
+
+            SpaceConfiguration space4 = new SpaceConfiguration();
+            HighlightSpaceConfiguration highlightConfiguration4 = new HighlightSpaceConfiguration();
+            highlightConfiguration4.setGroupIdentifier("group2");
+            highlightConfiguration4.setHighlight(false);
+            space4.setHighlightConfiguration(highlightConfiguration4);
+            space4.setId("4");
+
+            return asList(space1, space2, space3, space4);
+        }
+    }
+    @Test
+    public void should_find_group_by_identifier() {
+
+        FunctionalConfigurationService service = new FunctionalConfigurationWithGroupsLoadingService(settingService, spaceService);
+
+        List<SpaceConfiguration> spaces = service.getSpacesForGroup("group1");
+
+        assertThat(spaces.size(), equalTo(1));
+        assertThat(spaces.get(0).getId(), equalTo("1"));
+        assertThat(spaces.get(0).getHighlightConfiguration().getGroupIdentifier(), equalTo("group1"));
+    }
+
+    @Test
+    public void should_find_empty_list_when_group_doesnt_exist() {
+
+        FunctionalConfigurationService service = new FunctionalConfigurationWithGroupsLoadingService(settingService, spaceService);
+
+        List<SpaceConfiguration> spaces = service.getSpacesForGroup("toto");
+
+        assertThat(spaces.size(), equalTo(0));
+    }
+
+
+    @Test
+    public void should_find_legacy_highlight_spaces_when_group_identifier_is_null() {
+
+        FunctionalConfigurationService service = new FunctionalConfigurationWithGroupsLoadingService(settingService, spaceService);
+
+        List<SpaceConfiguration> spaces = service.getSpacesForGroup("0");
+
+        assertThat(spaces.size(), equalTo(1));
+        assertThat(spaces.get(0).getId(), equalTo("3"));
+        assertNull(spaces.get(0).getHighlightConfiguration().getGroupIdentifier());
     }
 }

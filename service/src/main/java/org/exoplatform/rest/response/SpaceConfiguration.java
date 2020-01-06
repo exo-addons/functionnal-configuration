@@ -10,6 +10,7 @@ public class SpaceConfiguration implements Serializable {
     private boolean activityComposerVisible;
 
     private HighlightSpaceConfiguration highlightConfiguration;
+    private String spaceUri;
 
     public SpaceConfiguration() {}
 
@@ -51,5 +52,13 @@ public class SpaceConfiguration implements Serializable {
 
     public void setHighlightConfiguration(HighlightSpaceConfiguration highlightConfiguration) {
         this.highlightConfiguration = highlightConfiguration;
+    }
+
+    public void setSpaceUri(String spaceUri) {
+        this.spaceUri = spaceUri;
+    }
+
+    public String getSpaceUri() {
+        return spaceUri;
     }
 }

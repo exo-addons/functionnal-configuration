@@ -8,6 +8,15 @@
 
     <display-name>functional-configuration-portlets</display-name>
     <absolute-ordering />
+
+    <jsp-config>
+        <taglib>
+            <taglib-uri>http://java.sun.com/portlet_2_0</taglib-uri>
+            <taglib-location>/tld/portlet_2_0.tld</taglib-location>
+        </taglib>
+    </jsp-config>
+
+
     <servlet>
         <servlet-name>GateInServlet</servlet-name>
         <servlet-class>org.gatein.wci.api.GateInServlet</servlet-class>

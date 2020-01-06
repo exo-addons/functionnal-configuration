@@ -16,8 +16,10 @@ import org.exoplatform.rest.response.SpaceConfiguration;
 import org.exoplatform.service.exception.FunctionalConfigurationRuntimeException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
@@ -101,7 +103,7 @@ public class FunctionalConfigurationService {
     }
   }
 
-  private List<SpaceConfiguration> findSpaceConfigurations() {
+  protected List<SpaceConfiguration> findSpaceConfigurations() {
 
     List<SpaceConfiguration> spaceConfigurations = new ArrayList<>();
 
@@ -113,7 +115,9 @@ public class FunctionalConfigurationService {
       Set<String> activityComposerConfiguration = loadActivityComposerConfigurationAsSet();
 
       boolean hideActivityComposer = activityComposerConfiguration.stream().anyMatch(f -> space.getId().equals(f));
+      String spaceUri = LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", ""));
 
+      spaceConfiguration.setSpaceUri(spaceUri);
       spaceConfiguration.setId(space.getId());
       spaceConfiguration.setDisplayName(space.getDisplayName());
       spaceConfiguration.setDescription(space.getDescription());
@@ -308,5 +312,23 @@ public class FunctionalConfigurationService {
     return nonNull(settingValue)
             ? (String) settingValue.getValue()
             : "";
+  }
+
+  public List<SpaceConfiguration> getSpacesForGroup(String groupIdentifier) {
+
+    final String LEGACY_IDENTIFIER = "0"; // For compatibility we are using identifier 0
+    List<SpaceConfiguration> spaceConfigurations = findSpaceConfigurations();
+
+    if (LEGACY_IDENTIFIER.equals(groupIdentifier)) {
+      return spaceConfigurations.stream()
+              .filter(space -> Objects.nonNull(space.getHighlightConfiguration()))
+              .filter(space -> space.getHighlightConfiguration().isHighlight() && StringUtils.isEmpty(space.getHighlightConfiguration().getGroupIdentifier()))
+              .collect(Collectors.toList());
+    }
+
+    return spaceConfigurations.stream()
+            .filter(space -> Objects.nonNull(space.getHighlightConfiguration()) && space.getHighlightConfiguration().isHighlight())
+            .filter(space -> groupIdentifier.equals(space.getHighlightConfiguration().getGroupIdentifier()))
+            .collect(Collectors.toList());
   }
 }

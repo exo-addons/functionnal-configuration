@@ -17,4 +17,20 @@
 			<keywords>Functional Configuration Portlets</keywords>
 		</portlet-info>
 	</portlet>
+
+	<portlet>
+		<portlet-name>HighlightSpacesPortlet</portlet-name>
+		<display-name>Highlight spaces portlet</display-name>
+		<portlet-class>org.exoplatform.portlets.highlightspaces.HighlightSpacesPortlet</portlet-class>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>VIEW</portlet-mode>
+			<portlet-mode>EDIT</portlet-mode>
+		</supports>
+		<supported-locale>fr</supported-locale>
+		<portlet-info>
+			<title>Spaces group</title>
+			<keywords>Spaces group</keywords>
+		</portlet-info>
+	</portlet>
 </portlet-app>

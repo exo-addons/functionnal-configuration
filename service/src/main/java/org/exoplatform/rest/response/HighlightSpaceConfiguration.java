@@ -7,6 +7,8 @@ public class HighlightSpaceConfiguration implements Serializable {
     private boolean highlight;
     private int order;
 
+    private String groupIdentifier;
+
     public HighlightSpaceConfiguration() {}
 
     public boolean isHighlight() {
@@ -23,5 +25,13 @@ public class HighlightSpaceConfiguration implements Serializable {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public String getGroupIdentifier() {
+        return groupIdentifier;
+    }
+
+    public void setGroupIdentifier(String groupIdentifier) {
+        this.groupIdentifier = groupIdentifier;
     }
 }
