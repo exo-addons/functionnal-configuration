@@ -24,7 +24,9 @@ public class FunctionalConfigurationActivityManagerImpl extends ActivityManagerI
 
 
     public FunctionalConfigurationActivityManagerImpl(FunctionalConfigurationService functionalConfigurationService,ActivityStorage activityStorage, IdentityManager identityManager, UserACL userACL, FileService fileService, UploadService uploadService, RepositoryService repositoryService, NodeHierarchyCreator nodeHierarchyCreator, InitParams params) {
-        super(activityStorage, identityManager, userACL,params);
+        super(activityStorage, identityManager, userACL,
+                fileService, uploadService, repositoryService,
+                nodeHierarchyCreator, params);
         this.functionalConfigurationService=functionalConfigurationService;
     }
 
