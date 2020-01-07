@@ -34,13 +34,17 @@ export function init(preferences) {
 	}
 
 	function renderVueAppWithI18n(lang, url) {
+
 		exoi18n.loadLanguageAsync(lang, url).then(i18n => {
 
-            Vue.prototype.$preferences = preferences
 			new Vue({
 				render: h => h(HighLightSpacesView),
-				i18n
-			}).$mount('#highlightSpacesView');
+				i18n,
+				data: function() {
+				    return preferences;
+				}
+			})
+			.$mount('#' + preferences.idPortlet);
 		});
 	}
 }

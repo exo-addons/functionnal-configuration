@@ -26,13 +26,14 @@ export default {
     },
     created() {
         FunctionalConfigurationService.getConfiguration()
-            .then(result => { this.groups = this.provideGroupsConfiguration(result.spaceConfigurations); console.log(this.groups); })
+            .then(result => { this.groups = this.provideGroupsConfiguration(result.spaceConfigurations); })
             .catch(error => console.log(error));
     },
     methods: {
         provideGroupsConfiguration: function(spaceConfigurations) {
+            console.log(spaceConfigurations);
             return (spaceConfigurations)
-                ? [...new Set(spaceConfigurations.filter(space => space.groupIdentifier).map(space => space.groupIdentifier))]
+                ? [...new Set(spaceConfigurations.map(space => space.highlightConfiguration).filter(space => space.groupIdentifier).map(space => space.groupIdentifier))]
                 : [];
         }
     }

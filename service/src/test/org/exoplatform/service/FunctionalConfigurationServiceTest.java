@@ -8,6 +8,7 @@ import org.exoplatform.rest.response.FunctionalConfiguration;
 import org.exoplatform.rest.response.HighlightSpaceConfiguration;
 import org.exoplatform.rest.response.SpaceConfiguration;
 import org.exoplatform.service.exception.FunctionalConfigurationRuntimeException;
+import org.exoplatform.service.helpers.SpaceConfigurationBuilder;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.test.matchers.SettingValueMatcher;
@@ -18,10 +19,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static org.exoplatform.service.FunctionalConfigurationService.*;
+import static org.exoplatform.service.helpers.SpaceAssertion.assertSpaceConfiguration;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -117,19 +118,6 @@ public class FunctionalConfigurationServiceTest {
         assertSpaceConfiguration(configuration.getSpaceConfigurations().get(2), expectedSpace2);
     }
 
-    private void assertSpaceConfiguration(SpaceConfiguration actual, SpaceConfiguration expected) {
-        assertThat(actual.getId(), equalTo(expected.getId()));
-        assertThat(actual.getDisplayName(), equalTo(expected.getDisplayName()));
-        assertThat(actual.getDescription(), equalTo(expected.getDescription()));
-        assertThat(actual.isActivityComposerVisible(), equalTo(expected.isActivityComposerVisible()));
-        HighlightSpaceConfiguration highlightConfiguration = actual.getHighlightConfiguration();
-
-        if (Objects.nonNull(highlightConfiguration) && Objects.nonNull(expected.getHighlightConfiguration())) {
-            assertThat(highlightConfiguration.getOrder(), equalTo(expected.getHighlightConfiguration().getOrder()));
-            assertThat(highlightConfiguration.isHighlight(), equalTo(expected.getHighlightConfiguration().isHighlight()));
-        }
-    }
-
     @Test
     public void should_update_space() {
 
@@ -180,47 +168,6 @@ public class FunctionalConfigurationServiceTest {
     }
 
 
-    class SpaceConfigurationBuilder {
-
-        private SpaceConfiguration spaceConfiguration;
-
-        SpaceConfigurationBuilder() {
-            this.spaceConfiguration = new SpaceConfiguration();
-        }
-
-        SpaceConfigurationBuilder spaceId(String spaceId) {
-            spaceConfiguration.setId(spaceId);
-            return this;
-        }
-
-        SpaceConfigurationBuilder displayName(String displayName) {
-            spaceConfiguration.setDisplayName(displayName);
-            return this;
-        }
-
-        SpaceConfigurationBuilder descritpion(String description) {
-            spaceConfiguration.setDescription(description);
-            return this;
-        }
-
-        SpaceConfigurationBuilder activityComposerVisible(boolean activityComposerVisible) {
-            spaceConfiguration.setActivityComposerVisible(activityComposerVisible);
-            return this;
-        }
-
-        SpaceConfigurationBuilder order(int order) {
-            HighlightSpaceConfiguration highlightConfiguration = new HighlightSpaceConfiguration();
-            highlightConfiguration.setOrder(order);
-            highlightConfiguration.setHighlight(true);
-            spaceConfiguration.setHighlightConfiguration(highlightConfiguration);
-            return this;
-        }
-
-        SpaceConfiguration build() {
-            return spaceConfiguration;
-        }
-    }
-
     class FunctionalConfigurationWithSpacesLoadingService extends FunctionalConfigurationService {
 
         FunctionalConfigurationWithSpacesLoadingService(SettingService settingService, SpaceService spaceService) {
@@ -234,14 +181,17 @@ public class FunctionalConfigurationServiceTest {
             space1.setId("1");
             space1.setDisplayName("DISPLAY_NAME_1");
             space1.setDescription("DESCRIPTION_1");
+            space1.setGroupId("GROUP_1");
             Space space2 = new Space();
             space2.setId("2");
             space2.setDisplayName("DISPLAY_NAME_2");
             space2.setDescription("DESCRIPTION_2");
+            space2.setGroupId("GROUP_2");
             Space space3 = new Space();
             space3.setId("3");
             space3.setDisplayName("DISPLAY_NAME_3");
             space3.setDescription("DESCRIPTION_3");
+            space3.setGroupId("GROUP_3");
 
             return asList(space1, space2, space3);
         }

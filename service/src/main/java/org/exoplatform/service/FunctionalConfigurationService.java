@@ -1,10 +1,7 @@
 package org.exoplatform.service;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
-
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.commons.api.settings.data.Context;
@@ -19,7 +16,9 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.webui.Utils;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
@@ -29,6 +28,8 @@ public class FunctionalConfigurationService {
   private static final Log LOGGER = ExoLogger.getLogger(FunctionalConfigurationService.class);
 
   static final String HIDE_DOCUMENT_ACTION_ACTIVITIES = "HIDE_DOCUMENT_ACTION_ACTIVITIES";
+
+  static final String GROUP_SPACES_SETTINGS = "GROUP_SPACES_SETTINGS";
 
   public static final String HIDE_USER_ACTIVITY_COMPOSER = "hideUserActivityComposer";
 
@@ -107,12 +108,14 @@ public class FunctionalConfigurationService {
 
     List<SpaceConfiguration> spaceConfigurations = new ArrayList<>();
 
+    Map<String, Integer> highlightConfigurationMap = loadHighlightConfigAsMap();
+    Set<String> activityComposerConfiguration = loadActivityComposerConfigurationAsSet();
+    Map<String, List<String>> groupSpacesConfigurations = loadGroupSpacesSettingAsMap();
+
     for (Space space: findAllSpaces()) {
 
       SpaceConfiguration spaceConfiguration = new SpaceConfiguration();
 
-      Map<String, Integer> highlightConfigurationMap = loadHighlightConfigAsMap();
-      Set<String> activityComposerConfiguration = loadActivityComposerConfigurationAsSet();
 
       boolean hideActivityComposer = activityComposerConfiguration.stream().anyMatch(f -> space.getId().equals(f));
       String spaceUri = LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", ""));
@@ -127,6 +130,7 @@ public class FunctionalConfigurationService {
       if (highlightConfigurationMap.containsKey(space.getId())) {
         highlightConfiguration.setHighlight(true);
         highlightConfiguration.setOrder(highlightConfigurationMap.get(space.getId()));
+        highlightConfiguration.setGroupIdentifier(findGroupIdentifierForSpace(groupSpacesConfigurations, space.getId()));
       } else {
         highlightConfiguration.setHighlight(false);
       }
@@ -136,6 +140,22 @@ public class FunctionalConfigurationService {
     }
 
     return spaceConfigurations;
+  }
+
+  String findGroupIdentifierForSpace(Map<String, List<String>> groupSpacesConfigurations, String spaceId) {
+    final String DEFAULT_GROUP_ID = "0";
+
+    for (Map.Entry<String, List<String>> entry: groupSpacesConfigurations.entrySet()) {
+
+      String groupId = entry.getKey();
+      List<String> spacesIds = entry.getValue();
+
+      if (spacesIds.contains(spaceId)) {
+        return groupId;
+      }
+    }
+
+    return DEFAULT_GROUP_ID;
   }
 
   protected List<Space> findAllSpaces() {
@@ -189,7 +209,7 @@ public class FunctionalConfigurationService {
             || StringUtils.isEmpty(settingValue.getValue().toString())) {
       return false;
     }
-    return Boolean.valueOf(settingValue.getValue().toString());
+    return Boolean.parseBoolean(settingValue.getValue().toString());
   }
 
   public SpaceConfiguration updateSpaceConfiguration(SpaceConfiguration spaceConfiguration) {
@@ -200,6 +220,7 @@ public class FunctionalConfigurationService {
       LOGGER.error("Space with id : " + spaceConfiguration.getId() + " NOT FOUND");
       throw new FunctionalConfigurationRuntimeException("space.notfound");
     }
+
 
     // load highlight configuration as map from setting service
     Map<String, Integer> highlightConfigurationsMap = loadHighlightConfigAsMap();
@@ -212,7 +233,91 @@ public class FunctionalConfigurationService {
     // update and save activity composer configuration
     updateAndSaveActivityComposerConfigurationSet(spaceConfiguration, space, activityComposerConfigurations);
 
+    HighlightSpaceConfiguration highlightConfiguration = spaceConfiguration.getHighlightConfiguration();
+    if (nonNull(highlightConfiguration) && highlightConfiguration.isHighlight()) {
+      addSpaceToGroup(space.getId(), highlightConfiguration.getGroupIdentifier());
+    }
+
     return spaceConfiguration;
+  }
+
+  void addSpaceToGroup(String spaceId, String groupIdentifier) {
+
+    Map<String, List<String>> groupSpacesConfigurationMap = loadGroupSpacesSettingAsMap();
+
+
+    for (Map.Entry<String, List<String>> entry: groupSpacesConfigurationMap.entrySet()) {
+
+      List<String> spacesIds = entry.getValue();
+      spacesIds.remove(spaceId);
+    }
+
+    if (Objects.nonNull(groupIdentifier)) {
+
+      if (!groupSpacesConfigurationMap.containsKey(groupIdentifier)) {
+        groupSpacesConfigurationMap.put(groupIdentifier, new ArrayList<>());
+      }
+      groupSpacesConfigurationMap.get(groupIdentifier).add(spaceId);
+    }
+
+
+    saveGroupSpacesSetting(groupSpacesConfigurationMap);
+  }
+
+  private void saveGroupSpacesSetting(Map<String, List<String>> groupSpacesConfigurationMap) {
+    String groupSpaceSettings = convertGroupSpaceSettingMapToStringConfiguration(groupSpacesConfigurationMap);
+    settingService.set(Context.GLOBAL, Scope.GLOBAL, GROUP_SPACES_SETTINGS, SettingValue.create(groupSpaceSettings));
+  }
+
+  private String convertGroupSpaceSettingMapToStringConfiguration(Map<String, List<String>> groupSpacesConfigurationMap) {
+
+    List<String> groupSettingsConfiguration = new ArrayList<>();
+
+    for (Map.Entry<String, List<String>> entry: groupSpacesConfigurationMap.entrySet()) {
+      String groupId = entry.getKey();
+      List<String> spacesId = entry.getValue();
+
+      StringJoiner groupSpaceJoiner = new StringJoiner(HIGHLIGHT_SPACES_SEPARATOR);
+
+      groupSpaceJoiner.add(groupId);
+      spacesId.forEach(groupSpaceJoiner::add);
+
+      groupSettingsConfiguration.add(groupSpaceJoiner.toString());
+    }
+
+    StringJoiner groupJoiner = new StringJoiner(SETTINGS_SEPARATOR);
+    groupSettingsConfiguration.forEach(groupJoiner::add);
+    return groupJoiner.toString();
+  }
+
+  private Map<String, List<String>> loadGroupSpacesSettingAsMap() {
+
+    final int GROUP_CONFIGURATION_POSITION = 0;
+
+    Map<String, List<String>> groupSpacesConfigurationMap = new LinkedHashMap<>(); // Linked because we have to keep order map insertion
+
+    String groupSpacesSettingsValue = loadSettingsAsString(GROUP_SPACES_SETTINGS);
+
+    if (StringUtils.isEmpty(groupSpacesSettingsValue)) {
+      return groupSpacesConfigurationMap;
+    }
+
+    String[] groupConfigurations = groupSpacesSettingsValue.split(SETTINGS_SEPARATOR);
+    for (String groupConfiguration: groupConfigurations) {
+
+      String[] arrayConfiguration = groupConfiguration.split(HIGHLIGHT_SPACES_SEPARATOR);
+
+      if (arrayConfiguration.length == 1) {
+        String groupId = arrayConfiguration[GROUP_CONFIGURATION_POSITION];
+        groupSpacesConfigurationMap.put(groupId, new ArrayList<>());
+      } else if (arrayConfiguration.length > 1) {
+        String groupId = arrayConfiguration[GROUP_CONFIGURATION_POSITION];
+        List<String> spacesId = Arrays.asList(arrayConfiguration).subList(1, arrayConfiguration.length);
+        groupSpacesConfigurationMap.put(groupId, new ArrayList<>(spacesId));
+      }
+    }
+
+    return groupSpacesConfigurationMap;
   }
 
   private void updateAndSaveActivityComposerConfigurationSet(SpaceConfiguration spaceConfiguration, Space space, Set<String> activityComposerConfigurations) {
@@ -306,8 +411,8 @@ public class FunctionalConfigurationService {
             : new ArrayList<>();
   }
 
-  private String loadSettingsAsString(String highlightSpaces) {
-    SettingValue settingValue = settingService.get(Context.GLOBAL, Scope.GLOBAL, highlightSpaces);
+  private String loadSettingsAsString(String settingKey) {
+    SettingValue settingValue = settingService.get(Context.GLOBAL, Scope.GLOBAL, settingKey);
 
     return nonNull(settingValue)
             ? (String) settingValue.getValue()

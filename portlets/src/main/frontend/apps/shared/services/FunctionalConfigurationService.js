@@ -7,18 +7,9 @@ class FunctionalConfigurationService {
     }
 
     getConfiguration() {
-        const bouchon = {"hideComposerActivities":false,"spaceConfigurations":[
-                            {"id":"1","displayName":"espace1","description":null,"groupIdentifier":1},
-                            {"id":"2","displayName":"espace2","description":null,"groupIdentifier":2},
-                            {"id":"2","displayName":"espace3","description":null,"groupIdentifier":""},
-                            {"id":"2","displayName":"espace4","description":null,"groupIdentifier":null},
-                            {"id":"2","displayName":"espace5","description":null},
-                            {"id":"2","displayName":"espace6","description":null,"groupIdentifier":1},
-                            {"id":"2","displayName":"espace7","description":null,"groupIdentifier":6}]};
         return new Promise((resolve, reject) => {
             axios.get(this.route + "/configuration")
-//                .then((response) => resolve(response.data))
-                .then((response) => resolve(bouchon))
+               .then((response) => resolve(response.data))
                 .catch((error) => reject(error));
         });
     }
@@ -27,7 +18,6 @@ class FunctionalConfigurationService {
         return new Promise((resolve, reject) => {
             axios.get(`${this.route}/group/${groupIdentifier}/spaces`)
                 .then((response) => resolve(response.data))
-//                .then((response) => resolve(bouchon))
                 .catch((error) => reject(error));
         });
     }

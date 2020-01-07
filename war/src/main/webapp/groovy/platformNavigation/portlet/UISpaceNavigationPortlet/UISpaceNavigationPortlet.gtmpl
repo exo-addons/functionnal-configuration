@@ -41,35 +41,14 @@
   def highlightSpaces = highlightSpacesService.getUserHighlightedSpaces(prContext.getRemoteUser());
   List<String> highlightSpacesIds = new ArrayList<String> ();
 
-  if (highlightSpaces.size() > 0) {%>
-	<div class="uiSpaceNavigationPortlet" id="highlightedSpaces">
-    	<ul class="spaceNavigation ">
-<%
-      		for(space in highlightSpaces) {
-            	String tabStyleNavigation="";
-                String spaceDisplayName = space.getDisplayName();
+  if (highlightSpaces.size() > 0) {
+            for(space in highlightSpaces) {
                 String spaceId = space.getId();
                 highlightSpacesIds.add(spaceId);
-                spaceImageSource = space.getAvatarUrl();
-                def spaceUrl = uicomponent.buildSpaceURL(space);
 
-        		if(uicomponent.isSelectedSpace(space)) {
-                	tabStyleNavigation = "spaceItemSelected";
-             	}
-                if (spaceImageSource == null){
-               		spaceImageSource= LinkProvider.SPACE_DEFAULT_AVATAR_URL;
-                }
-                       
-        %>
-                <li class="spaceItem $tabStyleNavigation">
-                	<a href="$spaceUrl" class="spaceIcon avatarMini" ><img data-container="body" alt="" src="$spaceImageSource" data-placement="right" rel="tooltip" data-toggle="tooltip" title="$spaceDisplayName"/><span data-placement="bottom" data-container="body" rel="tooltip" data-toggle="tooltip" data-original-title="$spaceDisplayName"> $spaceDisplayName</span></a>
-                </li>
-        <%  } %> <!-- END FOR -->
-
-     	</ul>
-	</div>
-<%
+            }
   }
+
   String restUrl = uicomponent.getRestUrl();
   String defaultValueForTextSearch = _ctx.appRes("UISpaceNavigationPortlet.msg.filter-spaces");
   def seeSpacesLabel = _ctx.appRes("UISpaceNavigationPortlet.label.see");

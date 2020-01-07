@@ -7,18 +7,15 @@
 
   String portletName = preferences.getValue("portlet_name", "");
   String portletGroup = preferences.getValue("portlet_group", "");
+
 %>
+<div id="<portlet:namespace/>"></div>
 
-<span style="margin-left:15px;color:white;font-weight:bold"><%=portletName%></span>
+<script>
+	require(['SHARED/highlightSpacesViewBundle'], function(highlightSpacesViewBundle) {
 
-<div id="highlightSpacesView">
-    <script>
-		require(['SHARED/highlightSpacesViewBundle'], function(highlightSpacesViewBundle) {
+		var preferences = { portletName: "<%=portletName%>", portletGroup: "<%=portletGroup%>", idPortlet: '<portlet:namespace/>' };
 
-		    var preferences = { portletGroup: "<%=portletGroup%>" };
-
-			highlightSpacesViewBundle.init(preferences);
-	    });
-
-	</script>
-</div>
+		highlightSpacesViewBundle.init(preferences);
+	});
+</script>

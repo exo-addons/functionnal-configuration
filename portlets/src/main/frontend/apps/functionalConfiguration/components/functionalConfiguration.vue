@@ -84,7 +84,15 @@
             </td>
             <!--       SHOW order in view mode         -->
             <td v-if="space.highlightConfiguration && space.highlightConfiguration.highlight && !space.edition">
-              {{space.highlightConfiguration.order}}
+
+              <span>
+                <label><b>{{$t('functionalConfiguration.table.group')}}</b></label>
+                {{space.highlightConfiguration.groupIdentifier}}
+              </span>
+              <span>
+                <label><b>{{$t('functionalConfiguration.table.order')}}</b></label>
+                {{space.highlightConfiguration.order}}
+              </span>
             </td>
                 <!--       SHOW order if empty in view mode         -->
             <td v-else-if="!space.edition"></td>
@@ -125,21 +133,29 @@
                 <!--       SHOW checkbox and input for order in edition mode        -->
             <td v-if="space.edition">
                 <div class="input-group">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">
-                    <input
-                        aria-label="Checkbox for following text input"
-                        type="checkbox"
-                        v-model="currentSpaceSaved.highlightConfiguration.highlight"
-                    />
-                    </div>
-                </div>
-                <input
-                    aria-label="Text input with checkbox"
-                    class="form-control"
-                    type="number"
-                    v-model="currentSpaceSaved.highlightConfiguration.order"
-                />
+
+                  <div class="input-group-prepend">
+                      <div class="input-group-text">
+                      <input
+                          aria-label="Checkbox for following text input"
+                          type="checkbox"
+                          v-model="currentSpaceSaved.highlightConfiguration.highlight"
+                      />
+                      </div>
+                  </div>
+                  <div class="form-group">
+                    <select class="form-control" id="formSelectGroupSpaces" v-model="currentSpaceSaved.highlightConfiguration.groupIdentifier">
+                      <option value="0"></option>
+                      <option v-for="index in 10" :value="index">Groupe {{index}}</option>
+                    </select>
+                  </div>
+
+                  <input
+                      aria-label="Text input with checkbox"
+                      class="form-control"
+                      type="number"
+                      v-model="currentSpaceSaved.highlightConfiguration.order"
+                  />
                 </div>
             </td>
             <!--       SHOW buttons in edition mode        -->

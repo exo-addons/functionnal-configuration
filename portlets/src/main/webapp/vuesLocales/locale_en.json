@@ -17,5 +17,7 @@
   "functionalConfiguration.table.edit": "Edit",
   "functionalConfiguration.table.cancel": "Cancel",
   "functionalConfiguration.table.save": "Save",
-  "functionalConfiguration.table.empty": "No data"
+  "functionalConfiguration.table.empty": "No data",
+  "functionalConfiguration.table.group": "Group: ",
+  "functionalConfiguration.table.order": "Order: "
 }
