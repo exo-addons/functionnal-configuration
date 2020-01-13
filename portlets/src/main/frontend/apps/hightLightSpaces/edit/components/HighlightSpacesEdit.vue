@@ -1,16 +1,30 @@
 <template>
   <div>
-      <form :action="$preferences.actionURL" method="POST">
-        <label>Titre du bloc</label>
-        <input type="text" name="portlet_name" value="toto" v-model="$preferences.portletName"/>
+      <form class="form-horizontal" :action="$preferences.actionURL" method="POST">
 
-        <select name="portlet_group" v-model="$preferences.portletGroup">
-            <option value="0"></option>
-            <option v-for="group of groups" :value="group">Groupe {{group}}</option>
-        </select>
+        <div class="control-group">
+            <label class="control-label" for="portlet_name">Nom de la portlet : </label>
+            <div class="controls">
+                <input type="text" name="portlet_name" v-model="$preferences.portletName"/>
+            </div>
+        </div>
 
 
-        <input type="submit" value="Sauvegarder"/>
+        <div class="control-group">
+            <label class="control-label" for="portlet_name">Sélection du groupe : </label>
+            <div class="controls">
+                <select name="portlet_group" v-model="$preferences.portletGroup">
+                    <option value="0"></option>
+                    <option v-for="group of groups" :value="group">Groupe {{group}}</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="control-group submit-form">
+            <input type="submit" class="btn" value="Sauvegarder"/>
+            <input type="button" class="btn" value="Fermer" onclick="javascript:eXo.webui.UIForm.submitForm('UIPortletForm','Close',true)"/>
+        </div>
       </form>
   </div>
 </template>
@@ -39,3 +53,12 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+
+    .submit-form {
+        text-align: center;
+        margin-top: 40px;
+    }
+
+</style>

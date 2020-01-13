@@ -22,3 +22,11 @@
 
 	</script>
 </div>
+
+<style>
+
+.uiAction.uiActionBorder {
+
+    display: none;
+}
+</style>
