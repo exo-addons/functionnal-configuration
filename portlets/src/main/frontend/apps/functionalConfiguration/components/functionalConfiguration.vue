@@ -181,7 +181,7 @@
 <style scoped src="bootstrap/dist/css/bootstrap.min.css"></style>
 
 <script>
-import functionalConfigurationService from "../services/functionalConfigurationService";
+import functionalConfigurationService from "../../shared/services/FunctionalConfigurationService";
 
 export default {
   data() {
@@ -431,5 +431,8 @@ const SORT_STATE = {
     max-width: 300px;
     right: 10px;
     top: 67px;
+}
+.input-group-text {
+    height: 40px;
 }
 </style>
