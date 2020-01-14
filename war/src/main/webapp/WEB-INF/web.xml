@@ -6,6 +6,13 @@
          version="3.0">
   <display-name>functional-configuration</display-name>
 
+  <jsp-config>
+    <taglib>
+      <taglib-uri>http://java.sun.com/portlet_2_0</taglib-uri>
+      <taglib-location>/tld/portlet_2_0.tld</taglib-location>
+    </taglib>
+  </jsp-config>
+
   <!-- Run mode: prod, dev or live -->
   <context-param>
     <param-name>juzu.run_mode</param-name>
