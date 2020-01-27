@@ -2,8 +2,8 @@
     <div class="highlightedSpacesGroup">
         <span class="portletName">{{$root.portletName}}</span>
         <ul>
-            <li class="portletSpace" v-for="space in spaces" :key="space.id">
-                <a class="portletSpaceLink" :href="space.spaceUri" >{{space.displayName}}</a>
+            <li class="portletSpace" v-for="space in spaces" :key="space.id" :class="isSpaceSelected(space) ? 'spaceItemSelected' : ''">
+                <a class="portletSpaceLink" :href="space.spaceUri">{{space.displayName}}</a>
             </li>
         </ul>
     </div>
@@ -26,6 +26,11 @@ export default {
             .then(result => this.spaces = result.sort((a, b) => a.highlightConfiguration.order - b.highlightConfiguration.order))
             .catch(error => console.log(error));
     },
+    methods: {
+      isSpaceSelected(space) {
+        return space.spaceUri === window.location.pathname || window.location.pathname.startsWith(space.spaceUri + '/');
+      }
+    }
 }
 </script>
 
