@@ -6,10 +6,10 @@ class FunctionalConfigurationService {
         this.route = '/rest/functional-configuration';
     }
 
-    getConfiguration() {
+    getConfiguration(){
         return new Promise((resolve, reject) => {
             axios.get(this.route + "/configuration")
-               .then((response) => resolve(response.data))
+                .then((response) => resolve(response.data))
                 .catch((error) => reject(error));
         });
     }
@@ -49,6 +49,16 @@ class FunctionalConfigurationService {
 
         return new Promise((resolve, reject) => {
             axios.put(restRoute)
+                .then((response) => resolve(response.data))
+                .catch((error) => reject(error));
+        });
+    }
+
+    putTermsAndConditions(termsAndConditions) {
+        const restRoute = this.route + "/terms-and-conditions";
+
+        return new Promise((resolve, reject) => {
+            axios.put(restRoute, termsAndConditions)
                 .then((response) => resolve(response.data))
                 .catch((error) => reject(error));
         });

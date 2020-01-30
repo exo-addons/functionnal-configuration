@@ -18,11 +18,15 @@
   "functionalConfiguration.table.cancel": "Annuler",
   "functionalConfiguration.table.save": "Sauvegarder",
   "functionalConfiguration.table.empty": "Aucun espace",
+  "functionalConfiguration.activeTermsAndConditions": "Activer la charte utilisateur",
+  "functionalConfiguration.termsAndConditionsWebContentUrl": "Chemin du contenu de la charte utilisateur",
   "functionalConfiguration.table.group": "Groupe : ",
   "functionalConfiguration.table.order": "Ordre : ",
   "functionalConfiguration.highlightSpaces.edit.portletName": "Nom de la portlet : ",
   "functionalConfiguration.highlightSpaces.edit.groupSelection": "Sélection du groupe : ",
   "functionalConfiguration.highlightSpaces.edit.group": "Groupe",
   "functionalConfiguration.highlightSpaces.edit.close": "Fermer",
-  "functionalConfiguration.highlightSpaces.edit.save": "Sauvegarder"
+  "functionalConfiguration.highlightSpaces.edit.save": "Sauvegarder",
+  "functionalConfiguration.termsAndConditionsWebContentUrl.info": "Chemin du fichier de la charte dans le workspace collaboration (par exemple /sites/intranet/web contents/terms). La dernière version publiée est utilisée.",
+  "functionalConfiguration.termsAndConditions.fileNotFound": "Le contenu de la charte utilisateur est introuvable à cet emplacement : {url}"
 }

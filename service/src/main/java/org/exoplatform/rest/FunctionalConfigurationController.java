@@ -1,17 +1,18 @@
 package org.exoplatform.rest;
 
-import static org.exoplatform.rest.utils.RestUtils.isValidBooleanParameter;
+import org.exoplatform.rest.response.SpaceConfiguration;
+import org.exoplatform.rest.response.TermsAndConditions;
+import org.exoplatform.service.FunctionalConfigurationService;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.services.rest.resource.ResourceContainer;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.exoplatform.rest.response.SpaceConfiguration;
-import org.exoplatform.service.FunctionalConfigurationService;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
-import org.exoplatform.services.rest.resource.ResourceContainer;
+import static org.exoplatform.rest.utils.RestUtils.isValidBooleanParameter;
 
 @Path("/functional-configuration")
 public class FunctionalConfigurationController implements ResourceContainer {
@@ -21,6 +22,7 @@ public class FunctionalConfigurationController implements ResourceContainer {
     private static final String SPACES_BY_GROUP = "/group/{id}/spaces";
     private static final String COMPOSER_ACTIVITY_ENDPOINT = "/composer-activity";
     private static final String UPDATE_SPACE_CONFIGURATION_ENDPOINT = "/configuration/space";
+    private static final String UPDATE_TERMS_AND_CONDITIONS = "/terms-and-conditions";
 
     private FunctionalConfigurationService functionalConfigurationService;
 
@@ -89,6 +91,19 @@ public class FunctionalConfigurationController implements ResourceContainer {
 
         return Response
                 .ok(spaceConfiguration, MediaType.APPLICATION_JSON)
+                .build();
+    }
+
+    @PUT
+    @Path(UPDATE_TERMS_AND_CONDITIONS)
+    @RolesAllowed("administrators")
+    public Response updateTermsAndConditions(TermsAndConditions termsAndConditions) {
+        LOGGER.info("FunctionalConfiguration : updateTermsAndConditions", termsAndConditions);
+
+        functionalConfigurationService.updateTermsAndConditions(termsAndConditions);
+
+        return Response
+                .ok(MediaType.APPLICATION_JSON)
                 .build();
     }
 }

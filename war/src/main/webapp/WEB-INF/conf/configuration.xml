@@ -7,4 +7,5 @@
   <import>war:/conf/document-activity/document-activity-configuration.xml</import>
   <import>war:/conf/activity-composer-configuration/portal/portal-configuration.xml</import>
   <import>war:/conf/activity-composer-configuration/menu-configuration.xml</import>
+  <import>war:/conf/resources-bundle/resources-bundle-configuration.xml</import>
 </configuration>

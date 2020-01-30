@@ -1,6 +1,5 @@
 package org.exoplatform.service;
 
-import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
@@ -10,13 +9,16 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.rest.response.FunctionalConfiguration;
 import org.exoplatform.rest.response.HighlightSpaceConfiguration;
 import org.exoplatform.rest.response.SpaceConfiguration;
+import org.exoplatform.rest.response.TermsAndConditions;
 import org.exoplatform.service.exception.FunctionalConfigurationRuntimeException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.utils.NodeUtils;
 
+import javax.jcr.Node;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,11 +39,13 @@ public class FunctionalConfigurationService {
 
   public static final String HIGHLIGHT_SPACES = "highlightspaces";
 
+  static final String TERMS_AND_CONDITIONS_ACTIVE = "TERMS_AND_CONDITIONS_ACTIVE";
+  static final String TERMS_AND_CONDITIONS_WEBCONTENT_URL = "TERMS_AND_CONDITIONS_WEBCONTENT_URL";
+
   // SEPARATOR between space_id and highlight_space_order : ID#ORDER
   public static final String HIGHLIGHT_SPACES_SEPARATOR = "#";
 
   private static final String SETTINGS_SEPARATOR = ";";
-
 
   private SettingService settingService;
 
@@ -191,7 +195,20 @@ public class FunctionalConfigurationService {
 
     configuration.setSpaceConfigurations(findSpaceConfigurations());
 
+    configuration.setTermsAndConditions(getTermsAndConditions());
+
     return configuration;
+  }
+
+  public TermsAndConditions getTermsAndConditions() {
+    TermsAndConditions termsAndConditions = new TermsAndConditions();
+    boolean isTermsAndConditionsActive = isTermsAndConditionsActive();
+    if (isTermsAndConditionsActive) {
+      termsAndConditions.setActive(isTermsAndConditionsActive);
+      termsAndConditions.setWebContentUrl(loadSettingsAsString(TERMS_AND_CONDITIONS_WEBCONTENT_URL));
+    }
+
+    return termsAndConditions;
   }
 
   public boolean isDocumentActionActivityHidden() {
@@ -203,7 +220,11 @@ public class FunctionalConfigurationService {
     return getSettingValueAsBoolean(settingService.get(Context.GLOBAL, Scope.GLOBAL, HIDE_USER_ACTIVITY_COMPOSER));
   }
 
-  private boolean getSettingValueAsBoolean(SettingValue<?> settingValue) {
+  public boolean isTermsAndConditionsActive() {
+    return getSettingValueAsBoolean(settingService.get(Context.GLOBAL, Scope.GLOBAL, TERMS_AND_CONDITIONS_ACTIVE));
+  }
+
+  public boolean getSettingValueAsBoolean(SettingValue<?> settingValue) {
 
     if (Objects.isNull(settingValue)
             || Objects.isNull(settingValue.getValue())
@@ -221,7 +242,6 @@ public class FunctionalConfigurationService {
       LOGGER.error("Space with id : " + spaceConfiguration.getId() + " NOT FOUND");
       throw new FunctionalConfigurationRuntimeException("space.notfound");
     }
-
 
     // load highlight configuration as map from setting service
     Map<String, Integer> highlightConfigurationsMap = loadHighlightConfigAsMap();
@@ -418,6 +438,18 @@ public class FunctionalConfigurationService {
     return nonNull(settingValue)
             ? (String) settingValue.getValue()
             : "";
+  }
+
+  public void updateTermsAndConditions(TermsAndConditions termsAndConditions) {
+
+    boolean isActive = termsAndConditions.isActive();
+    settingService.set(Context.GLOBAL, Scope.GLOBAL, TERMS_AND_CONDITIONS_ACTIVE, SettingValue.create(isActive));
+
+    if (isActive && Objects.nonNull(NodeUtils.findCollaborationFile(termsAndConditions.getWebContentUrl()))) {
+      settingService.set(Context.GLOBAL, Scope.GLOBAL, TERMS_AND_CONDITIONS_WEBCONTENT_URL, SettingValue.create(termsAndConditions.getWebContentUrl()));
+    } else {
+      settingService.set(Context.GLOBAL, Scope.GLOBAL, TERMS_AND_CONDITIONS_WEBCONTENT_URL, SettingValue.create(""));
+    }
   }
 
   public List<SpaceConfiguration> getSpacesForGroup(String groupIdentifier) {

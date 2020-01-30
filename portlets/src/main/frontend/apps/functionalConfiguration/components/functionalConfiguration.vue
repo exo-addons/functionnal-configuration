@@ -34,9 +34,36 @@
       >{{ $t('functionalConfiguration.hideComposerActivities') }}</label>
     </div>
 
+    <!-- Terms and conditions -->
+    <div class="d-flex justify-content-start align-items-center">
+      <div class="custom-control custom-switch hide-switches term-and-conditions-input">
+      
+        <input
+            type="checkbox"
+            class="custom-control-input"
+            id="inputActiveTermsAndConditions"
+            v-model="configuration.termsAndConditions.active"
+          />
+          <label class="custom-control-label" for="inputActiveTermsAndConditions">{{ $t('functionalConfiguration.activeTermsAndConditions') }}</label>
+      </div>
+      
+      <div class="d-flex align-items-center pr-2">
+        <label class="control-label pr-1" for="inputTermsAndConditions term-and-conditions-label">
+          {{ $t('functionalConfiguration.termsAndConditionsWebContentUrl') }}
+
+          <font-awesome-icon :title="$t('functionalConfiguration.termsAndConditionsWebContentUrl.info')" :icon="['fas', 'info-circle']" />
+
+        </label>
+        <input id="inputTermsAndConditions" :disabled="!configuration.termsAndConditions.active" type="text" v-model="configuration.termsAndConditions.webContentUrl"/>
+      </div>
+
+      <button @click="saveTermsAndConditions(configuration.termsAndConditions)" class="actionIcon saveTermsButton" type="button" data-toggle="tooltip" :title="$t('functionalConfiguration.table.save')">
+        <i class="uiIconSave uiIconLightGray"></i>
+      </button>
+    </div>
+
     <br/>
     <br/>
- 
 
     <!-- Search in table input and clear btn -->
     <div class="col-6 col-xl-4">
@@ -313,6 +340,15 @@ export default {
         var text = document.createElement('textarea');
         text.innerHTML = str;
         return text.value;
+      },
+      saveTermsAndConditions(termsAndConditions) {
+        functionalConfigurationService.putTermsAndConditions(termsAndConditions)
+          .then(response => this.successResponse())
+          .catch(error => {
+            
+            const errorMessage = error.response.data;
+            this.toastDanger(this.$t(errorMessage, { "url": termsAndConditions.webContentUrl }) );
+          });
       }
 
   },
@@ -435,4 +471,9 @@ const SORT_STATE = {
 .input-group-text {
     height: 40px;
 }
+.saveTermsButton {
+  background-color: transparent;
+}
+.term-and-conditions-input { min-width: 250px; }
+.term-and-conditions-label { margin-left:10px; }
 </style>

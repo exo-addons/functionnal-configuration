@@ -9,6 +9,8 @@ public class FunctionalConfiguration implements Serializable {
 
     private boolean hideComposerActivities;
 
+    private TermsAndConditions termsAndConditions = new TermsAndConditions();
+
     private List<SpaceConfiguration> spaceConfigurations;
 
     public FunctionalConfiguration() {}
@@ -35,5 +37,13 @@ public class FunctionalConfiguration implements Serializable {
 
     public void setSpaceConfigurations(List<SpaceConfiguration> spaceConfigurations) {
         this.spaceConfigurations = spaceConfigurations;
+    }
+
+    public TermsAndConditions getTermsAndConditions() {
+        return termsAndConditions;
+    }
+
+    public void setTermsAndConditions(TermsAndConditions termsAndConditions) {
+        this.termsAndConditions = termsAndConditions;
     }
 }

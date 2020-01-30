@@ -18,11 +18,15 @@
   "functionalConfiguration.table.cancel": "Cancel",
   "functionalConfiguration.table.save": "Save",
   "functionalConfiguration.table.empty": "No data",
+  "functionalConfiguration.activeTermsAndConditions": "Enable terms and conditions",
+  "functionalConfiguration.termsAndConditionsWebContentUrl": "Terms and conditions content path",
+  "functionalConfiguration.termsAndConditionsWebContentUrl.info": "Path of the content in the collaboration workspace (for example /sites/intranet/web contents/terms). The latest published version is used.",
   "functionalConfiguration.table.group": "Group: ",
   "functionalConfiguration.table.order": "Order: ",
   "functionalConfiguration.highlightSpaces.edit.portletName": "Portlet name: ",
   "functionalConfiguration.highlightSpaces.edit.groupSelection": "Group selection: ",
   "functionalConfiguration.highlightSpaces.edit.group": "Group",
   "functionalConfiguration.highlightSpaces.edit.close": "Close",
-  "functionalConfiguration.highlightSpaces.edit.save": "Save"
+  "functionalConfiguration.highlightSpaces.edit.save": "Save",
+  "functionalConfiguration.termsAndConditions.fileNotFound": "The terms and conditions content cannot be found at {url}"
 }

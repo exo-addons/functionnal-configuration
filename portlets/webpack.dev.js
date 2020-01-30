@@ -12,7 +12,7 @@ module.exports = merge(common, {
         highlightSpacesEdit: "./hightLightSpaces/edit/HighlightSpacesEdit.js"
     },
     output: {
-    	path: path.resolve(__dirname, '../webapp/js/'),
+    	path: path.resolve(__dirname, 'src/main/webapp/js/'),
     	filename: '[name].bundle.js',
     	libraryTarget: 'amd'
     },

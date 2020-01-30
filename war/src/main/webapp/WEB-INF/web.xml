@@ -6,6 +6,8 @@
          version="3.0">
   <display-name>functional-configuration</display-name>
 
+  <absolute-ordering/>
+
   <!-- Run mode: prod, dev or live -->
   <context-param>
     <param-name>juzu.run_mode</param-name>
@@ -32,5 +34,26 @@
     <url-pattern>/assets/*</url-pattern>
   </servlet-mapping>
 
-  <absolute-ordering/>
+  <!-- ================================================================== -->
+  <!--           Servlet Charte d'utilisation                             -->
+  <!-- ================================================================== -->
+  <servlet>
+    <servlet-name>TermsAndConditionsViewServlet</servlet-name>
+    <servlet-class>org.exoplatform.termsconditions.TermsAndConditionsViewServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TermsAndConditionsViewServlet</servlet-name>
+    <url-pattern>/terms-and-conditions</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>TermsAndConditionsActionServlet</servlet-name>
+    <servlet-class>org.exoplatform.termsconditions.TermsAndConditionsActionServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TermsAndConditionsActionServlet</servlet-name>
+    <url-pattern>/terms-and-conditions-action</url-pattern>
+  </servlet-mapping>
+
 </web-app>

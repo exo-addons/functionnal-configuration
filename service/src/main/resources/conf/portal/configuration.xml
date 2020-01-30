@@ -9,4 +9,34 @@
 		<type>org.exoplatform.highlight.spaces.HighlightSpacesService</type>
 	</component>
 
+	<component>
+		<type>org.exoplatform.termsconditions.TermsAndConditionsService</type>
+	</component>
+
+
+	<external-component-plugins>
+		<target-component>org.exoplatform.web.filter.ExtensibleFilter</target-component>
+		<component-plugin profiles="all">
+			<name>Terms and conditions filter</name>
+			<set-method>addFilterDefinitions</set-method>
+			<type>org.exoplatform.web.filter.FilterDefinitionPlugin</type>
+			<init-params>
+				<object-param>
+					<name>Terms and conditions filterr</name>
+					<object type="org.exoplatform.web.filter.FilterDefinition">
+						<field name="filter">
+							<object type="org.exoplatform.termsconditions.TermsAndConditionsFilter"/>
+						</field>
+						<field name="patterns">
+							<collection type="java.util.ArrayList" item-type="java.lang.String">
+								<value>
+									<string>.*</string>
+								</value>
+							</collection>
+						</field>
+					</object>
+				</object-param>
+			</init-params>
+		</component-plugin>
+	</external-component-plugins>
 </configuration>

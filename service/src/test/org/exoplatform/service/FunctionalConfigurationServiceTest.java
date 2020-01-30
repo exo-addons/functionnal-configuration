@@ -7,18 +7,24 @@ import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.rest.response.FunctionalConfiguration;
 import org.exoplatform.rest.response.HighlightSpaceConfiguration;
 import org.exoplatform.rest.response.SpaceConfiguration;
+import org.exoplatform.rest.response.TermsAndConditions;
 import org.exoplatform.service.exception.FunctionalConfigurationRuntimeException;
 import org.exoplatform.service.helpers.SpaceConfigurationBuilder;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.test.matchers.SettingValueMatcher;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.jcr.Node;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static org.exoplatform.service.FunctionalConfigurationService.*;
@@ -38,6 +44,9 @@ public class FunctionalConfigurationServiceTest {
 
     @Mock
     private SpaceService spaceService;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     private FunctionalConfigurationService functionalConfigurationService;
 
@@ -271,5 +280,44 @@ public class FunctionalConfigurationServiceTest {
         assertThat(spaces.size(), equalTo(1));
         assertThat(spaces.get(0).getId(), equalTo("3"));
         assertNull(spaces.get(0).getHighlightConfiguration().getGroupIdentifier());
+    }
+
+    @Test
+    public void should_update_terms_and_conditions() {
+
+        boolean active = true;
+        String webcontentUrl = "toto";
+
+        TermsAndConditions termsAndConditionsRequest = new TermsAndConditions();
+        termsAndConditionsRequest.setActive(active);
+        termsAndConditionsRequest.setWebContentUrl(webcontentUrl);
+
+        functionalConfigurationService.updateTermsAndConditions(termsAndConditionsRequest);
+
+        verify(settingService).set(eq(Context.GLOBAL), eq(Scope.GLOBAL), eq(TERMS_AND_CONDITIONS_ACTIVE), argThat(new SettingValueMatcher(SettingValue.create(active))));
+        verify(settingService).set(eq(Context.GLOBAL), eq(Scope.GLOBAL), eq(TERMS_AND_CONDITIONS_WEBCONTENT_URL), argThat(new SettingValueMatcher(SettingValue.create(webcontentUrl))));
+    }
+
+    @Test
+    public void should_send_error_when_webcontent_not_found() {
+
+        FunctionalConfigurationWithWebContentNotFoundService functionalConfigurationService = new FunctionalConfigurationWithWebContentNotFoundService(settingService, spaceService);
+
+        thrown.expect(FunctionalConfigurationRuntimeException.class);
+        thrown.expectMessage("termsAndConditions.fileNotFound");
+
+        functionalConfigurationService.updateTermsAndConditions(new TermsAndConditions());
+
+    }
+
+    class FunctionalConfigurationWithWebContentNotFoundService extends FunctionalConfigurationService {
+
+        public FunctionalConfigurationWithWebContentNotFoundService(SettingService settingService, SpaceService spaceService) {
+            super(settingService, spaceService);
+        }
+
+        public Node findNodeFileByAbsoluteName(String webContentUrl) {
+            return null;
+        }
     }
 }
