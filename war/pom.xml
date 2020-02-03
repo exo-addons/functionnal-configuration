@@ -35,5 +35,39 @@
   </dependencies>
   <build>
     <finalName>functional-configuration</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.exoplatform.maven.plugin</groupId>
+        <artifactId>diff-extension-maven-plugin</artifactId>
+        <version>1.0.0</version>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <abortBuildOnDiff>false</abortBuildOnDiff>
+          <sourceVersion>5.2.1</sourceVersion>
+          <targetVersion>${org.exoplatform.platform.version}</targetVersion>
+          <files>
+            <fileToCheck>
+              <groupId>org.exoplatform.platform</groupId>
+              <artifactId>platform-extension-portlets-platformNavigation</artifactId>
+              <path>/groovy/platformNavigation/portlet/UISpaceNavigationPortlet/UISpaceNavigationPortlet.gtmpl</path>
+              <type>war</type>
+            </fileToCheck>
+            <fileToCheck>
+              <groupId>org.exoplatform.platform</groupId>
+              <artifactId>platform-extension-portlets-platformNavigation</artifactId>
+              <path>/groovy/platformNavigation/portlet/UIUserNavigationPortlet/UIUserNavigationPortlet.gtmpl</path>
+              <type>war</type>
+            </fileToCheck>
+          </files>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>
