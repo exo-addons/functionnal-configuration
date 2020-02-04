@@ -2,11 +2,12 @@ Readme
 =======
 
 This addon is a merge of 2 exiting addon : https://github.com/exo-addons/highlight-spaces and https://github.com/exo-addons/activity-composer-configuration
-It provide a user interface to :
-- configure hightlighted addons
+It provides a user interface to :
+- configure hightlighted spaces
 - configure spaces on which we disable activity composer
 - configure if the composer is available for user stream
 - disable/enable activities on documents upload/modifications
+- disbale/enable terms and conditions approval on login
 
 To install it :
 ./addon install function-configuration
@@ -22,11 +23,11 @@ Space Menu :
 
 Versions 1.0.x are for 5.2.x 
 
-Versions 1.1.x are for 5.3.x+
+Versions 1.1.x and 1.2.x are for 5.3.x+
 
 Versions
 ========
 
-1.0.3 : Fix problem about document activities which can be displayed even if deactivated
-
-1.1.0 : Fix incompatibility with eXo Platform 5.3.0
+* 1.0.3 : Fix problem about document activities which can be displayed even if deactivated
+* 1.1.0 : Fix incompatibility with eXo Platform 5.3.0
+* 1.2.0 : Add Terms and Conditions feature and allow to display highlighted spaces by group
