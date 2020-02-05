@@ -1,6 +1,7 @@
 package org.exoplatform.termsconditions;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.rest.response.TermsAndConditions;
 import org.exoplatform.service.FunctionalConfigurationService;
 import org.exoplatform.service.exception.FunctionalConfigurationRuntimeException;
@@ -24,13 +25,21 @@ public class TermsAndConditionsService {
 
     private IdentityManager identityManager;
 
+    private UserACL userACL;
 
-    public TermsAndConditionsService(FunctionalConfigurationService functionalConfigurationService, IdentityManager identityManager) {
+    public TermsAndConditionsService(FunctionalConfigurationService functionalConfigurationService,
+                                     IdentityManager identityManager,
+                                     UserACL userACL) {
         this.functionalConfigurationService = functionalConfigurationService;
         this.identityManager = identityManager;
+        this.userACL = userACL;
     }
 
     boolean isTermsAndConditionsAcceptedBy(String userName){
+        if(userACL.isSuperUser()) {
+            return true;
+        }
+
         Profile socialProfile = findUserProfileByUserName(userName);
 
         try {
