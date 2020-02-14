@@ -1,37 +1,41 @@
 package org.exoplatform.termsconditions;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.rest.response.TermsAndConditions;
 import org.exoplatform.service.FunctionalConfigurationService;
 import org.exoplatform.service.exception.FunctionalConfigurationRuntimeException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserProfile;
 import org.exoplatform.utils.NodeUtils;
 
 import javax.jcr.Node;
 import java.util.Objects;
 
-import static org.exoplatform.utils.IdentityUtils.findUserProfileByUserName;
+import static java.util.Objects.isNull;
 
 public class TermsAndConditionsService {
 
-    private static final String TERMS_AND_CONDITONS_PROPERTY = "acceptedTermsAndConditions";
     private static final Log LOGGER = ExoLogger.getLogger(TermsAndConditionsService.class);
 
-    private final FunctionalConfigurationService functionalConfigurationService;
+    private static final String TERMS_AND_CONDITONS_PROPERTY = "acceptedTermsAndConditions";
 
-    private IdentityManager identityManager;
+    private FunctionalConfigurationService functionalConfigurationService;
+
+    private OrganizationService organizationService;
 
     private UserACL userACL;
 
     public TermsAndConditionsService(FunctionalConfigurationService functionalConfigurationService,
-                                     IdentityManager identityManager,
+                                     OrganizationService organizationService,
                                      UserACL userACL) {
         this.functionalConfigurationService = functionalConfigurationService;
-        this.identityManager = identityManager;
+        this.organizationService = organizationService;
         this.userACL = userACL;
     }
 
@@ -40,15 +44,15 @@ public class TermsAndConditionsService {
             return true;
         }
 
-        Profile socialProfile = findUserProfileByUserName(userName);
-
         try {
-            String acceptedTermsVersion = socialProfile.getProperty(TERMS_AND_CONDITONS_PROPERTY) + "";
+            UserProfile userProfile = findUserProfileByUserName(userName);
+
+            String acceptedTermsVersion = userProfile.getAttribute(TERMS_AND_CONDITONS_PROPERTY);
             String currentVersion = getCurrentTermsAndConditionsVersion();
 
             return currentVersion.equals(acceptedTermsVersion);
         } catch (Exception e) {
-            LOGGER.warn("Terms and conditions still not accepted by user: " + userName, e);
+            LOGGER.warn("Error while checking Terms and conditions accepted for user: " + userName + " - considered as not accepted", e);
             return false;
         }
     }
@@ -73,21 +77,25 @@ public class TermsAndConditionsService {
         }
     }
 
-    public void accept(String userName){
+    public void accept(String userName) {
 
-        Profile userProfile = findUserProfileByUserName(userName);
-        String currentVersionName = getCurrentTermsAndConditionsVersion();
-
-        userProfile.setProperty(TERMS_AND_CONDITONS_PROPERTY, currentVersionName);
-
+        RequestLifeCycle.begin(PortalContainer.getInstance());
         try {
-            identityManager.updateProfile(userProfile);
+            UserProfile userProfile = findUserProfileByUserName(userName);
+            String currentVersionName = getCurrentTermsAndConditionsVersion();
+
+            userProfile.setAttribute(TERMS_AND_CONDITONS_PROPERTY, currentVersionName);
+
+            organizationService.getUserProfileHandler().saveUserProfile(userProfile, false);
         } catch (Exception e) {
             LOGGER.error("Cannot update user profile to store terms and conditions acceptation", e);
+        } finally {
+            RequestLifeCycle.end();
         }
+
     }
 
-    boolean isTermsAndConditionsActive()  {
+    public boolean isTermsAndConditionsActive()  {
 
         TermsAndConditions termsAndConditions = functionalConfigurationService.getTermsAndConditions();
 
@@ -101,5 +109,19 @@ public class TermsAndConditionsService {
         }
 
         return termsAndConditions.isActive() && isValidFile;
+    }
+
+    private UserProfile findUserProfileByUserName(String userName) throws Exception {
+        User user = organizationService.getUserHandler().findUserByName(userName);
+        if (isNull(user)) {
+            throw new FunctionalConfigurationRuntimeException("User not found");
+        }
+
+        UserProfile userProfile = organizationService.getUserProfileHandler().findUserProfileByName(userName);
+        if(userProfile == null) {
+            userProfile = organizationService.getUserProfileHandler().createUserProfileInstance(userName);
+        }
+
+        return userProfile;
     }
 }
