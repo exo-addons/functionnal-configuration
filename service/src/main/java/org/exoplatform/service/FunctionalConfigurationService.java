@@ -6,6 +6,7 @@ import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.commons.api.settings.data.Context;
 import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.highlight.spaces.HighlightSpacesService;
 import org.exoplatform.rest.response.FunctionalConfiguration;
 import org.exoplatform.rest.response.HighlightSpaceConfiguration;
 import org.exoplatform.rest.response.SpaceConfiguration;
@@ -18,7 +19,6 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.utils.NodeUtils;
 
-import javax.jcr.Node;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -108,7 +108,7 @@ public class FunctionalConfigurationService {
     }
   }
 
-  protected List<SpaceConfiguration> findSpaceConfigurations() {
+  public List<SpaceConfiguration> findSpaceConfigurations() {
 
     List<SpaceConfiguration> spaceConfigurations = new ArrayList<>();
 
@@ -147,7 +147,7 @@ public class FunctionalConfigurationService {
   }
 
   public String findGroupIdentifierForSpace(Map<String, List<String>> groupSpacesConfigurations, String spaceId) {
-    final String DEFAULT_GROUP_ID = "";
+    final String DEFAULT_GROUP_ID = HighlightSpacesService.SPACES_GROUP_LEGACY_ID;
 
     for (Map.Entry<String, List<String>> entry: groupSpacesConfigurations.entrySet()) {
 
@@ -454,10 +454,9 @@ public class FunctionalConfigurationService {
 
   public List<SpaceConfiguration> getSpacesForGroup(String groupIdentifier) {
 
-    final String LEGACY_IDENTIFIER = "0"; // For compatibility we are using identifier 0
     List<SpaceConfiguration> spaceConfigurations = findSpaceConfigurations();
 
-    if (LEGACY_IDENTIFIER.equals(groupIdentifier)) {
+    if (HighlightSpacesService.SPACES_GROUP_LEGACY_ID.equals(groupIdentifier)) {
       return spaceConfigurations.stream()
               .filter(space -> Objects.nonNull(space.getHighlightConfiguration()))
               .filter(space -> space.getHighlightConfiguration().isHighlight() && StringUtils.isEmpty(space.getHighlightConfiguration().getGroupIdentifier()))

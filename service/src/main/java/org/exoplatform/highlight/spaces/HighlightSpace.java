@@ -1,27 +1,45 @@
 package org.exoplatform.highlight.spaces;
 
-import org.exoplatform.social.core.space.model.Space;
-
 public class HighlightSpace {
 
-    private Space space;
-    private Integer order;
+    private String id;
+    private String displayName;
+    private String avatarUri;
+    private String uri;
+
     private String groupIdentifier;
+    private Integer order;
 
-    public Integer getOrder() {
-        return order;
+    public String getId() {
+        return id;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setId(String spaceId) {
+        this.id = spaceId;
     }
 
-    public Space getSpace() {
-        return space;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setSpace(Space space) {
-        this.space = space;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getAvatarUri() {
+        return avatarUri;
+    }
+
+    public void setAvatarUri(String avatarUri) {
+        this.avatarUri = avatarUri;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     public String getGroupIdentifier() {
@@ -30,5 +48,13 @@ public class HighlightSpace {
 
     public void setGroupIdentifier(String groupIdentifier) {
         this.groupIdentifier = groupIdentifier;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 }

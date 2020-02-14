@@ -1,5 +1,6 @@
 package org.exoplatform.rest;
 
+import org.exoplatform.highlight.spaces.HighlightSpacesService;
 import org.exoplatform.rest.response.SpaceConfiguration;
 import org.exoplatform.rest.response.TermsAndConditions;
 import org.exoplatform.service.FunctionalConfigurationService;
@@ -8,7 +9,9 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -25,20 +28,22 @@ public class FunctionalConfigurationController implements ResourceContainer {
     private static final String UPDATE_TERMS_AND_CONDITIONS = "/terms-and-conditions";
 
     private FunctionalConfigurationService functionalConfigurationService;
+    private HighlightSpacesService highlightSpacesService;
 
     private static final Log LOGGER = ExoLogger.getLogger(FunctionalConfigurationService.class);
 
 
-    public FunctionalConfigurationController(FunctionalConfigurationService functionalConfigurationService){
+    public FunctionalConfigurationController(FunctionalConfigurationService functionalConfigurationService, HighlightSpacesService highlightSpacesService){
         this.functionalConfigurationService = functionalConfigurationService;
+        this.highlightSpacesService = highlightSpacesService;
     }
 
     @GET
     @Path(SPACES_BY_GROUP)
-    public Response getSpacesForGroup(@PathParam("id") String groupIdentifier){
+    public Response getHighlightedSpacesForGroup(@Context HttpServletRequest request, @PathParam("id") String spaceSGroupIdentifier){
 
         return Response
-                .ok(functionalConfigurationService.getSpacesForGroup(groupIdentifier), MediaType.APPLICATION_JSON)
+                .ok(highlightSpacesService.getHighlightedSpacesForUser(spaceSGroupIdentifier, request.getRemoteUser()), MediaType.APPLICATION_JSON)
                 .build();
     }
 

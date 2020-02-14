@@ -3,7 +3,7 @@
         <span class="portletName">{{$root.portletName}}</span>
         <ul>
             <li class="portletSpace" v-for="space in spaces" :key="space.id" :class="isSpaceSelected(space) ? 'spaceItemSelected' : ''">
-                <a class="portletSpaceLink" :href="space.spaceUri">{{space.displayName}}</a>
+                <a class="portletSpaceLink" :href="space.uri">{{space.displayName}}</a>
             </li>
         </ul>
     </div>
@@ -19,16 +19,15 @@ export default {
         }
     },
     created() {
-
         this.groupId = this.$root.portletGroup;
 
         FunctionalConfigurationService.getSpacesForGroup(this.groupId)
-            .then(result => this.spaces = result.sort((a, b) => a.highlightConfiguration.order - b.highlightConfiguration.order))
+            .then(highlightedSpaces => this.spaces = highlightedSpaces.sort((a, b) => a.order - b.order))
             .catch(error => console.log(error));
     },
     methods: {
       isSpaceSelected(space) {
-        return space.spaceUri === window.location.pathname || window.location.pathname.startsWith(space.spaceUri + '/');
+        return space.uri === window.location.pathname || window.location.pathname.startsWith(space.uri + '/');
       }
     }
 }

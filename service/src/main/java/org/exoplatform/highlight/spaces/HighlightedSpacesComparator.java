@@ -11,7 +11,7 @@ class HighlightSpacesComparator implements Comparator<HighlightSpace> {
     if (orderCompare != 0) {
       return orderCompare;
     } else {
-      return highlightSpace1.getSpace().getDisplayName().compareToIgnoreCase(highlightSpace2.getSpace().getDisplayName());
+      return highlightSpace1.getDisplayName().compareToIgnoreCase(highlightSpace2.getDisplayName());
     }
   }
 }

@@ -1,14 +1,16 @@
 package org.exoplatform.highlight.spaces;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import org.exoplatform.rest.response.SpaceConfiguration;
 import org.exoplatform.service.FunctionalConfigurationService;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HighlightSpacesService {
+
+  public static final String SPACES_GROUP_LEGACY_ID = "0"; // For compatibility we are using identifier 0
 
   private SpaceService spaceService;
   private FunctionalConfigurationService functionalConfigurationService;
@@ -18,29 +20,39 @@ public class HighlightSpacesService {
     this.spaceService = spaceService;
   }
 
-  public List<HighlightSpace> getUserHighlightedSpaces(String remoteUser) {
+  /**
+   * Get highlighted spaces for the legacy space group and the given user
+   * @param userId User id
+   * @return The list of highlighted spaces for the given group and user
+   */
+  public List<HighlightSpace> getHighlightedSpacesForUser(String userId) {
+    return this.getHighlightedSpacesForUser(SPACES_GROUP_LEGACY_ID, userId);
+  }
 
-    Map<String, Integer> configurations = functionalConfigurationService.loadHighlightConfigAsMap();
-    Map<String, List<String>> groupSpacesSettings = functionalConfigurationService.loadGroupSpacesSettingAsMap();
+  /**
+   * Get highlighted spaces for the given space group and the given user
+   * @param spacesGroupId Spaces group id
+   * @param userId User id
+   * @return The list of highlighted spaces for the given group and user
+   */
+  public List<HighlightSpace> getHighlightedSpacesForUser(String spacesGroupId, String userId) {
+
+    List<SpaceConfiguration> spaceConfigurationsForGroup = functionalConfigurationService.getSpacesForGroup(spacesGroupId);
 
     List<HighlightSpace> highlightSpaces = new ArrayList<>();
 
-    for (Map.Entry<String, Integer> entry : configurations.entrySet()) {
-      String spaceId = entry.getKey();
-      Integer order = entry.getValue();
+    for (SpaceConfiguration spaceConfiguration : spaceConfigurationsForGroup) {
+      Space space = spaceService.getSpaceById(spaceConfiguration.getId());
 
-      Space space = spaceService.getSpaceById(spaceId);
-
-      if (space != null && spaceService.isMember(space, remoteUser)) {
+      if (space != null && spaceService.isMember(space, userId)) {
 
         HighlightSpace highlightSpace = new HighlightSpace();
-        highlightSpace.setOrder(order);
-        highlightSpace.setSpace(space);
-
-
-        highlightSpace.setGroupIdentifier(
-                functionalConfigurationService.findGroupIdentifierForSpace(groupSpacesSettings, spaceId)
-        );
+        highlightSpace.setOrder(spaceConfiguration.getHighlightConfiguration().getOrder());
+        highlightSpace.setId(space.getId());
+        highlightSpace.setDisplayName(space.getDisplayName());
+        highlightSpace.setAvatarUri(space.getAvatarUrl());
+        highlightSpace.setUri(spaceConfiguration.getSpaceUri());
+        highlightSpace.setGroupIdentifier(spaceConfiguration.getHighlightConfiguration().getGroupIdentifier());
 
         highlightSpaces.add(highlightSpace);
       }

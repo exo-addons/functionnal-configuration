@@ -21,14 +21,21 @@
 <%
 import org.exoplatform.platform.webui.NavigationURLUtils;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.portal.webui.util.Util;
 import java.util.Collection;
 import org.exoplatform.web.application.JavascriptManager;
 import org.apache.commons.lang.StringEscapeUtils;
+import java.net.URL;
 
 import org.exoplatform.highlight.spaces.HighlightSpacesService;
+import org.exoplatform.highlight.spaces.HighlightSpace;
 
+def isSelectedSpace(HighlightSpace highlightSpace) {
+    URL currentUrl = new URL(Util.getPortalRequestContext().getRequest().getRequestURL().toString())
+    return highlightSpace.getUri().equals(currentUrl.getPath()) || currentUrl.getPath().startsWith(highlightSpace.getUri() + '/');
+}
 
-def isSpaceHighlightWithNoGroup(highlightSpace) {
+def isSpaceHighlightWithNoGroup(HighlightSpace highlightSpace) {
     return null == highlightSpace.getGroupIdentifier() || "" == highlightSpace.getGroupIdentifier();
 }
 
@@ -40,7 +47,7 @@ def spaceImageSource;
 def prContext = _ctx.getRequestContext().getParentAppRequestContext();
 
 HighlightSpacesService highlightSpacesService = uicomponent.getApplicationComponent(HighlightSpacesService.class);
-def highlightSpaces = highlightSpacesService.getUserHighlightedSpaces(prContext.getRemoteUser());
+def highlightSpaces = highlightSpacesService.getHighlightedSpacesForUser(HighlightSpacesService.SPACES_GROUP_LEGACY_ID, prContext.getRemoteUser());
 List<String> highlightSpacesIds = new ArrayList<String> ();
 
 if (highlightSpaces.size() > 0) { %>
@@ -48,23 +55,22 @@ if (highlightSpaces.size() > 0) { %>
     <ul class="spaceNavigation ">
     <%
     for(highlightSpace in highlightSpaces) {
-    def space = highlightSpace.getSpace();
-    String tabStyleNavigation="";
-    String spaceDisplayName = space.getDisplayName();
-    String spaceId = space.getId();
-    highlightSpacesIds.add(spaceId);
-    spaceImageSource = space.getAvatarUrl();
-    def spaceUrl = uicomponent.buildSpaceURL(space);
+      String tabStyleNavigation = "";
+      String spaceDisplayName = highlightSpace.getDisplayName();
+      String spaceId = highlightSpace.getId();
+      highlightSpacesIds.add(spaceId);
+      spaceImageSource = highlightSpace.getAvatarUri();
+      def spaceUrl = highlightSpace.getUri();
 
-    if(uicomponent.isSelectedSpace(space)) {
-        tabStyleNavigation = "spaceItemSelected";
-    }
-    if (spaceImageSource == null){
-        spaceImageSource= LinkProvider.SPACE_DEFAULT_AVATAR_URL;
-    }
+      if(isSelectedSpace(highlightSpace)) {
+          tabStyleNavigation = "spaceItemSelected";
+      }
+      if (spaceImageSource == null){
+          spaceImageSource= LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+      }
 
 
-    if (isSpaceHighlightWithNoGroup(highlightSpace)) {
+      if (isSpaceHighlightWithNoGroup(highlightSpace)) {
     %>
 
     <li class="spaceItem $tabStyleNavigation">
