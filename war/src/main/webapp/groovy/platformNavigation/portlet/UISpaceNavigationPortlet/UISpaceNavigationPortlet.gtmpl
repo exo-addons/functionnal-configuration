@@ -25,6 +25,7 @@ import org.exoplatform.portal.webui.util.Util;
 import java.util.Collection;
 import org.exoplatform.web.application.JavascriptManager;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import java.net.URL;
 
 import org.exoplatform.highlight.spaces.HighlightSpacesService;
@@ -36,7 +37,7 @@ def isSelectedSpace(HighlightSpace highlightSpace) {
 }
 
 def isSpaceHighlightWithNoGroup(HighlightSpace highlightSpace) {
-    return null == highlightSpace.getGroupIdentifier() || "" == highlightSpace.getGroupIdentifier();
+    return StringUtils.isEmpty(highlightSpace.getGroupIdentifier()) || highlightSpace.getGroupIdentifier().equals(HighlightSpacesService.SPACES_GROUP_LEGACY_ID);
 }
 
 def findSpacesLink = NavigationURLUtils.getURLInCurrentPortal("all-spaces");
@@ -47,7 +48,7 @@ def spaceImageSource;
 def prContext = _ctx.getRequestContext().getParentAppRequestContext();
 
 HighlightSpacesService highlightSpacesService = uicomponent.getApplicationComponent(HighlightSpacesService.class);
-def highlightSpaces = highlightSpacesService.getHighlightedSpacesForUser(HighlightSpacesService.SPACES_GROUP_LEGACY_ID, prContext.getRemoteUser());
+def highlightSpaces = highlightSpacesService.getHighlightedSpacesForUser(prContext.getRemoteUser());
 List<String> highlightSpacesIds = new ArrayList<String> ();
 
 if (highlightSpaces.size() > 0) { %>
@@ -119,12 +120,12 @@ if (highlightSpaces.size() > 0) { %>
                         spaceImageSource = space.getAvatarUrl();
                         def spaceUrl = uicomponent.buildSpaceURL(space);
         if(uicomponent.isSelectedSpace(space)) {
-                 tabStyleNavigation = "spaceItemSelected";
-             }
-                        if (spaceImageSource == null){
-                                spaceImageSource= LinkProvider.SPACE_DEFAULT_AVATAR_URL;
-                        }
-                         if(!highlightSpacesIds.contains(space.getId())){
+          tabStyleNavigation = "spaceItemSelected";
+        }
+        if (spaceImageSource == null){
+          spaceImageSource= LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+        }
+        if(!highlightSpacesIds.contains(space.getId())){
         %>
                                 <li class="spaceItem $tabStyleNavigation">
                                         <a href="$spaceUrl" class="spaceIcon avatarMini" ><img data-container="body" alt="" src="$spaceImageSource" data-placement="right" rel="tooltip" data-toggle="tooltip" title="$spaceDisplayName"/><span data-placement="bottom" data-container="body" rel="tooltip" data-toggle="tooltip" data-original-title="$spaceDisplayName"> $spaceDisplayName</span></a>

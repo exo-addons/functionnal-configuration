@@ -21,6 +21,7 @@ import org.exoplatform.utils.NodeUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
@@ -456,15 +457,15 @@ public class FunctionalConfigurationService {
 
     List<SpaceConfiguration> spaceConfigurations = findSpaceConfigurations();
 
+    Stream<SpaceConfiguration> spaceConfigurationStream = spaceConfigurations.stream()
+            .filter(space -> nonNull(space.getHighlightConfiguration()))
+            .filter(space -> space.getHighlightConfiguration().isHighlight());
+
     if (HighlightSpacesService.SPACES_GROUP_LEGACY_ID.equals(groupIdentifier)) {
-      return spaceConfigurations.stream()
-              .filter(space -> Objects.nonNull(space.getHighlightConfiguration()))
-              .filter(space -> space.getHighlightConfiguration().isHighlight() && StringUtils.isEmpty(space.getHighlightConfiguration().getGroupIdentifier()))
-              .collect(Collectors.toList());
+      return spaceConfigurationStream.collect(Collectors.toList());
     }
 
-    return spaceConfigurations.stream()
-            .filter(space -> Objects.nonNull(space.getHighlightConfiguration()) && space.getHighlightConfiguration().isHighlight())
+    return spaceConfigurationStream
             .filter(space -> groupIdentifier.equals(space.getHighlightConfiguration().getGroupIdentifier()))
             .collect(Collectors.toList());
   }

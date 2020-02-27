@@ -24,13 +24,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.jcr.Node;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.exoplatform.service.FunctionalConfigurationService.*;
 import static org.exoplatform.service.helpers.SpaceAssertion.assertSpaceConfiguration;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -270,15 +270,17 @@ public class FunctionalConfigurationServiceTest {
 
 
     @Test
-    public void should_find_legacy_highlight_spaces_when_group_identifier_is_null() {
+    public void should_find_all_highlight_spaces_when_group_identifier_is_null() {
 
         FunctionalConfigurationService service = new FunctionalConfigurationWithGroupsLoadingService(settingService, spaceService);
 
         List<SpaceConfiguration> spaces = service.getSpacesForGroup("0");
 
-        assertThat(spaces.size(), equalTo(1));
-        assertThat(spaces.get(0).getId(), equalTo("3"));
-        assertNull(spaces.get(0).getHighlightConfiguration().getGroupIdentifier());
+        assertThat(spaces.size(), equalTo(3));
+        List<String> spacesIds = spaces.stream().map(space -> space.getId()).collect(Collectors.toList());
+        assertTrue(spacesIds.contains("1"));
+        assertTrue(spacesIds.contains("2"));
+        assertTrue(spacesIds.contains("3"));
     }
 
     @Ignore
