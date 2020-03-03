@@ -28,7 +28,7 @@
     </parent>
     <groupId>org.exoplatform.addons.functional-configuration</groupId>
     <artifactId>functional-configuration</artifactId>
-    <version>1.2.x-SNAPSHOT</version>
+    <version>1.2.4</version>
     <packaging>pom</packaging>
     <name>Functional configuration addon</name>
     <description>Functional configuration addon</description>
@@ -41,7 +41,7 @@
     <scm>
         <connection>scm:git:git://github.com:exo-addons/functional-configuration.git</connection>
         <developerConnection>scm:git:git@github.com:exo-addons/functional-configuration.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>1.2.4</tag>
         <url>https://github.com/exo-addons/functional-configuration</url>
     </scm>
     <properties>
