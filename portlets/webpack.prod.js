@@ -11,7 +11,6 @@ module.exports = merge(common, {
 
     entry: {
     	functionalConfiguration: "./functionalConfiguration/functionalConfiguration.js",
-        highlightSpacesView: "./hightLightSpaces/view/HighlightSpacesView.js",
         highlightSpacesEdit: "./hightLightSpaces/edit/HighlightSpacesEdit.js"
     },
     output: {
