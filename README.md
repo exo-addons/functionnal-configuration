@@ -16,6 +16,10 @@ The following command must be executed from the root folder of the eXoPlatfomins
 User Guide
 ==========
 
+The addon provides a new administration screen, available through *Administration > Functional configuration*, to configure the platform:
+
+![functional-configuration-admin](https://user-images.githubusercontent.com/342645/79981188-89d28680-84a4-11ea-8f23-6b6864c5397e.png)
+
 Hightlighted spaces
 -------------------
 
