@@ -29,14 +29,14 @@ For each space, when clicking on the Edit button, the following options can be s
 
 When a space is set as highlighted but not assigned to a group, it is removed from the "My Spaces" list and displayed above it in the left navigation:
 
-// screenshot of left navigation
+![highlighted-spaces-no-group](https://user-images.githubusercontent.com/342645/79980974-33654800-84a4-11ea-8696-62d96d30a9c8.png)
 
 When a space is set as highlighted and assigned to a group, it is removed from the "My Spaces" list and a portlet must be added in the layout to display it by following these steps:
 * go to *Administration > Applications*
 * go to *Portlets*
 * select the portlet "Highlighted spaces portlet"
 
-// screenshot Applications registry
+![terms-and-conditions-app-registry](https://user-images.githubusercontent.com/342645/79980978-33fdde80-84a4-11ea-9606-1acdc19bafa4.png)
 
 * assign it in a category by clicking the action link "Click here to add into categories"
 * go to the site/page where you want to display the highlighted spaces and edit its layout
@@ -44,13 +44,13 @@ When a space is set as highlighted and assigned to a group, it is removed from t
 * edit the portlet
 * in the Edit mode tab, set the *Portlet name* and select the group you want to display
 
-// screenshot Edit mode
+![highlighted-spaces-edit-portlet](https://user-images.githubusercontent.com/342645/79980977-33654800-84a4-11ea-921a-f84b904bfffc.png)
 
 * save
 
 The highlighted spaces of the selected group are now displayed.
 
-// screenshot Highlighted spaces of group
+![highlighted-spaces-with-group](https://user-images.githubusercontent.com/342645/79980971-32ccb180-84a4-11ea-9250-7bca2c94b4e6.png)
 
 The portlet name set in the portlet edition is used as the group title.
 
