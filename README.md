@@ -25,7 +25,7 @@ For each space, when clicking on the Edit button, the following options can be s
 * the highlighted group the space belongs to - this is optional, a higlighted to belong to no group (10 groups are available, and cannot be changed)
 * the rank of the highlighted space
 
-// screenshot admin screen
+![spaces-edit-admin](https://user-images.githubusercontent.com/342645/79980016-bdacac80-84a2-11ea-8af1-e128241dde66.png)
 
 When a space is set as highlighted but not assigned to a group, it is removed from the "My Spaces" list and displayed above it in the left navigation:
 
@@ -52,23 +52,23 @@ The highlighted spaces of the selected group are now displayed.
 
 // screenshot Highlighted spaces of group
 
-The porltet name set in the portlet edition is used as the group title.
+The portlet name set in the portlet edition is used as the group title.
 
 
 Spaces Activity composer deactivation
 -------------------------------------
 
 The addon allows to hide the activity composer in the spaces activity stream.
-This configuration is done per space in the admin screen:
+This configuration is done per space in the admin screen by editing the space and switching the button of the *Activity composer* column:
 
-// screenshot admin screen
+![spaces-edit-admin](https://user-images.githubusercontent.com/342645/79980016-bdacac80-84a2-11ea-8af1-e128241dde66.png)
 
 User Activity composer deactivation
 -----------------------------------
 
 The addon allows to hide the activity composer in the user activity stream:
 
-// screenshot admin screen
+![user-activity-stream-admin](https://user-images.githubusercontent.com/342645/79980022-beddd980-84a2-11ea-9893-04ed9ef796f6.png)
 
 Document activities deactivation
 --------------------------------
@@ -77,7 +77,7 @@ Each time a document is created or uploaded in the platform, an activity is post
 This can flood the stream when a lot of documents are uploaded.
 This addon allows to disable these activities by activating the option in the admin screen:
 
-// screenshot admin screen
+![documents-activities-admin](https://user-images.githubusercontent.com/342645/79980028-beddd980-84a2-11ea-8b09-bf67d0ddbbec.png)
 
 When activiating, only new activities won't be posted, old ones are not deleted.
 Also, activities not generated during the deactivation will not be created back if the documents activities posting is enabled back.
@@ -87,7 +87,7 @@ Terms and conditions
 
 A terms and conditions approval screen can be enabled when users login:
 
-// screenshot admin screen
+![terms-and-conditions-admin](https://user-images.githubusercontent.com/342645/79980029-beddd980-84a2-11ea-9718-bd2b897531cc.png)
 
 The content of the terms and conditions must be stored in a web content, located in the `collbaoration` workspace.
 The full path of this web content must be filled in the input field.
