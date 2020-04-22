@@ -94,7 +94,7 @@ The full path of this web content must be filled in the input field.
 
 Once activated, and if at least a first version of the web content has been published, when a user logins for the first time, the terms and conditions screen is displayed and must be approved.
 
-// screenshot terms and conditions
+![terms-and-conditions](https://user-images.githubusercontent.com/342645/79979320-a0c3a980-84a1-11ea-8b09-e75b2537686c.png)
 
 Each time a new version of the web content is published, all the users must approved again the terms and coonditions.
 
