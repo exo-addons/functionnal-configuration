@@ -7,9 +7,9 @@
         <node>
             <uri>functional-configuration </uri>
             <name>functional-configuration </name>
-            <label>Functional configuration</label>
-            <label xml:lang="en">Functional configuration </label>
-            <label xml:lang="fr">Functional configuration </label>
+            <label>#{portal.label.functionalConfiguration}</label>
+            <label xml:lang="en">Functional configuration</label>
+            <label xml:lang="fr">Functional configuration</label>
             <page-reference>group::/platform/administrators::functionalComposerConfiguration</page-reference>
         </node>
     </page-nodes>

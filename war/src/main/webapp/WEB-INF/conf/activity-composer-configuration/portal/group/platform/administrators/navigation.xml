@@ -8,7 +8,7 @@
     <node>
       <uri>functionalComposerConfiguration</uri>
       <name>functionalComposerConfiguration</name>
-      <label>Functional configuration</label>
+      <label>#{portal.label.functionalConfiguration}</label>
       <page-reference>group::/platform/administrators::functionalComposerConfiguration</page-reference>
     </node>
   </page-nodes>
